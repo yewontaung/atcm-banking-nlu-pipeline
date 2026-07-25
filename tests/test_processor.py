@@ -1,5 +1,5 @@
 
-from dataprocessors.processors import DataPreProcessor
+from dataprocessors.preprocessors import DataPreProcessor
 
 
 processor = DataPreProcessor()

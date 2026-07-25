@@ -2,7 +2,7 @@ import torch
 
 from transformers import AutoTokenizer
 
-from dataprocessors.processors import PostProcessingLogitMapper
+from dataprocessors.postprocessors import EntityCombiner, PostProcessingLogitMapper
 from models.transformer_model import (
     BankingNLUTransformerModel
 )
@@ -51,15 +51,17 @@ mapper = PostProcessingLogitMapper(
     intent_threshold=float(env.INTENT_THRESHOLD)
 )
 
+entity_combiner = EntityCombiner()
+
 with torch.no_grad():
     output:ModelOutput = model(input_ids=encoded["input_ids"], attention_mask=encoded["attention_mask"])
     intents = mapper.map_intents(output.intent_logits)
-    entities = mapper.map_entities(
+    entity_tokens = mapper.map_entities(
         output.entity_logits,
         text,
         encoded["offset_mapping"][0]
     )
-
+    entities = entity_combiner.combine(entity_tokens)
     print(f"TEXT : {text}")
     print("==== intent prediction ====")
     print(intents)

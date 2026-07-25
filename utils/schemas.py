@@ -85,6 +85,14 @@ class IntentPrediction(BaseModel):
     label:str
     confidence:float
 
+class EntityTokenPrediction(BaseModel):
+    prediction_id:int
+    label:str
+    value:str
+    confidence:float
+    start_index:int
+    end_index:int
+
 class EntityPrediction(BaseModel):
     prediction_id:int
     label:str

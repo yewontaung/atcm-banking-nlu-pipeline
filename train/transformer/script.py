@@ -9,7 +9,7 @@ from dataprocessors.encoders import (
     EntityEncoder
 )
 
-from dataprocessors.processors import (
+from dataprocessors.preprocessors import (
     DataPreProcessor
 )
 

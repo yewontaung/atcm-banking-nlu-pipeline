@@ -1,4 +1,4 @@
-from dataprocessors.processors import DataPreProcessor
+from dataprocessors.preprocessors import DataPreProcessor
 
 from dataprocessors.tokenizers import TokenizationProcessor
 
