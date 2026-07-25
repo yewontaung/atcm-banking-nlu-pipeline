@@ -1,0 +1,26 @@
+[
+    {
+        "entity_id": 1,
+        "label": "receiver"
+    },
+    {
+        "entity_id": 2,
+        "label": "amount"
+    },
+    {
+        "entity_id": 3,
+        "label": "phone_number"
+    },
+    {
+        "entity_id": 4,
+        "label": "bill_type"
+    },
+    {
+        "entity_id": 5,
+        "label": "sender"
+    },
+    {
+        "entity_id": 6,
+        "label": "trx_type"
+    }
+]
