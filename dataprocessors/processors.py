@@ -85,7 +85,7 @@ class PostProcessingLogitMapper:
 
         for token_id, offset in zip(token_predictions, offset_mapping):
             label_id = int(token_id)
-            label = self.entity_encoder.id_to_label(label_id)
+            label = self.entity_encoder.id_to_label[label_id]
             confidence = float(torch.softmax(logits[0], dim=-1)[0][label_id])
 
             if label == "O":
@@ -102,6 +102,7 @@ class PostProcessingLogitMapper:
                 label=label,
                 confidence=confidence,
                 start_index=start_index,
+                end_index=end_index,
                 value=text[start_index:end_index]
             ))
 

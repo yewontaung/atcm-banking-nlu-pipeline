@@ -32,7 +32,7 @@ model.load_state_dict(checkpoint["model"])
 
 model.eval()
 
-text = "မင်းမောင်က ၃၀၀၀ ကျပ် ပေးပို့ထားတာကို စစ်ဆေးပါ။"
+text = env.TEST_PROMPT
 tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
 
 encoded = tokenizer(
@@ -48,10 +48,20 @@ threshold = 0.5
 mapper = PostProcessingLogitMapper(
     intent_encoder=intent_encoder,
     entity_encoder=entity_encoder,
-    intent_threshold=0.1
+    intent_threshold=float(env.INTENT_THRESHOLD)
 )
 
 with torch.no_grad():
     output:ModelOutput = model(input_ids=encoded["input_ids"], attention_mask=encoded["attention_mask"])
     intents = mapper.map_intents(output.intent_logits)
+    entities = mapper.map_entities(
+        output.entity_logits,
+        text,
+        encoded["offset_mapping"][0]
+    )
+
+    print(f"TEXT : {text}")
+    print("==== intent prediction ====")
     print(intents)
+    print("==== entity prediction ====")
+    print(entities)
