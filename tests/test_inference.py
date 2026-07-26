@@ -21,49 +21,36 @@ from utils.schemas import ModelOutput
 
 
 class NLUInference:
-
     def __init__(self):
-
         self.intent_encoder = IntentEncoder.from_file(
             "./metadata/intents.json"
         )
-
         self.entity_encoder = EntityEncoder.from_file(
             "./metadata/entities.json"
         )
-
 
         self.model = BankingNLUTransformerModel(
             model_name="xlm-roberta-base",
             intent_count=self.intent_encoder.no_of_lables,
             entity_count=self.entity_encoder.no_of_entities
         )
-
-
         checkpoint_path = (
             f"{env.CHECKPOINT_PATH}/{load_modelname()}"
         )
-
-
         checkpoint = torch.load(
             checkpoint_path,
             map_location="cpu"
         )
-
-
         self.model.load_state_dict(
             checkpoint["model"]
         )
-
         self.model.eval()
-
 
         self.tokenizer:PreTrainedTokenizerBase = (
             AutoTokenizer.from_pretrained(
                 "xlm-roberta-base"
             )
         )
-
 
         self.mapper = PostProcessingLogitMapper(
             intent_encoder=self.intent_encoder,
@@ -73,15 +60,10 @@ class NLUInference:
             )
         )
 
-
         self.entity_combiner = EntityCombiner()
 
 
-
-    def predict(
-        self,
-        text:str
-    ):
+    def predict(self, text:str):
 
         encoded = self.tokenizer(
             text,
@@ -99,20 +81,17 @@ class NLUInference:
                 attention_mask=encoded["attention_mask"]
             )
 
-
         intents = self.mapper.map_intents(
             output.intent_logits
         )
-
-
         entity_tokens = self.mapper.map_entities(
             output.entity_logits,
             text,
             encoded["offset_mapping"][0]
         )
 
-
         entities = self.entity_combiner.combine(
+            text,
             entity_tokens
         )
 
