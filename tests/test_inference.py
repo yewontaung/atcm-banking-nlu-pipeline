@@ -22,6 +22,11 @@ from utils.schemas import ModelOutput
 
 class NLUInference:
     def __init__(self):
+        self.DEVICE = (
+            "cuda"
+            if torch.cuda.is_available()
+            else "cpu"
+        )        
         self.intent_encoder = IntentEncoder.from_file(
             "./metadata/intents.json"
         )
@@ -44,6 +49,8 @@ class NLUInference:
         self.model.load_state_dict(
             checkpoint["model"]
         )
+
+        self.model.to(DEVICE)
         self.model.eval()
 
         self.tokenizer:PreTrainedTokenizerBase = (
@@ -77,8 +84,8 @@ class NLUInference:
         with torch.no_grad():
 
             output:ModelOutput = self.model(
-                input_ids=encoded["input_ids"],
-                attention_mask=encoded["attention_mask"]
+                input_ids=encoded["input_ids"].to(self.DEVICE),
+                attention_mask=encoded["attention_mask"].to(self.DEVICE)
             )
 
         intents = self.mapper.map_intents(
