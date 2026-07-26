@@ -36,6 +36,7 @@ from train.transformer.loss import (
     TransformerNLULoss
 )
 from utils import env
+from utils.loader import load_modelname
 
 
 
@@ -208,7 +209,7 @@ torch.save(
         "intent_encoder": intent_encoder.label_to_id,
         "entity_encoder": entity_encoder.label_to_id
     },
-    f"{env.CHECKPOINT_PATH}/{env.SAVED_MODEL_NAME_PREFIX}_{env.TRAINING_DATASIZE}.pt"
+    f"{env.CHECKPOINT_PATH}/{load_modelname()}"
 )
 
 print(

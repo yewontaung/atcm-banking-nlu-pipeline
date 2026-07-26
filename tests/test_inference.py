@@ -16,6 +16,7 @@ from dataprocessors.postprocessors import (
 )
 
 from utils import env
+from utils.loader import load_modelname
 from utils.schemas import ModelOutput
 
 
@@ -40,9 +41,7 @@ class NLUInference:
 
 
         checkpoint_path = (
-            f"{env.CHECKPOINT_PATH}/"
-            f"{env.SAVED_MODEL_NAME_PREFIX}_"
-            f"{env.TRAINING_DATASIZE}.pt"
+            f"{env.CHECKPOINT_PATH}/{load_modelname()}"
         )
 
 
