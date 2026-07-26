@@ -1,69 +1,188 @@
+import argparse
 import torch
 
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, PreTrainedTokenizerBase
 
-from dataprocessors.postprocessors import EntityCombiner, PostProcessingLogitMapper
-from models.transformer_model import (
-    BankingNLUTransformerModel
-)
+from models.transformer_model import BankingNLUTransformerModel
 
 from dataprocessors.encoders import (
     IntentEncoder,
     EntityEncoder
 )
+
+from dataprocessors.postprocessors import (
+    EntityCombiner,
+    PostProcessingLogitMapper
+)
+
 from utils import env
 from utils.schemas import ModelOutput
 
-intent_encoder = IntentEncoder.from_file("./metadata/intents.json")
-entity_encoder = EntityEncoder.from_file("./metadata/entities.json")
 
-model = BankingNLUTransformerModel(
-    model_name="xlm-roberta-base",
-    intent_count=intent_encoder.no_of_lables,
-    entity_count=entity_encoder.no_of_entities
-)
+class NLUInference:
 
-checkpoint = torch.load(
-    f"{env.CHECKPOINT_PATH}/{env.SAVED_MODEL_NAME_PREFIX}_{env.TRAINING_DATASIZE}.pt",
-    map_location="cpu"
-)
+    def __init__(self):
 
-model.load_state_dict(checkpoint["model"])
+        self.intent_encoder = IntentEncoder.from_file(
+            "./metadata/intents.json"
+        )
 
-model.eval()
+        self.entity_encoder = EntityEncoder.from_file(
+            "./metadata/entities.json"
+        )
 
-text = env.TEST_PROMPT
-tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
 
-encoded = tokenizer(
-    text,
-    return_tensors="pt",
-    return_offsets_mapping=True,
-    padding=True,
-    truncation=True
-)
+        self.model = BankingNLUTransformerModel(
+            model_name="xlm-roberta-base",
+            intent_count=self.intent_encoder.no_of_lables,
+            entity_count=self.entity_encoder.no_of_entities
+        )
 
-threshold = 0.5
 
-mapper = PostProcessingLogitMapper(
-    intent_encoder=intent_encoder,
-    entity_encoder=entity_encoder,
-    intent_threshold=float(env.INTENT_THRESHOLD)
-)
+        checkpoint_path = (
+            f"{env.CHECKPOINT_PATH}/"
+            f"{env.SAVED_MODEL_NAME_PREFIX}_"
+            f"{env.TRAINING_DATASIZE}.pt"
+        )
 
-entity_combiner = EntityCombiner()
 
-with torch.no_grad():
-    output:ModelOutput = model(input_ids=encoded["input_ids"], attention_mask=encoded["attention_mask"])
-    intents = mapper.map_intents(output.intent_logits)
-    entity_tokens = mapper.map_entities(
-        output.entity_logits,
-        text,
-        encoded["offset_mapping"][0]
+        checkpoint = torch.load(
+            checkpoint_path,
+            map_location="cpu"
+        )
+
+
+        self.model.load_state_dict(
+            checkpoint["model"]
+        )
+
+        self.model.eval()
+
+
+        self.tokenizer:PreTrainedTokenizerBase = (
+            AutoTokenizer.from_pretrained(
+                "xlm-roberta-base"
+            )
+        )
+
+
+        self.mapper = PostProcessingLogitMapper(
+            intent_encoder=self.intent_encoder,
+            entity_encoder=self.entity_encoder,
+            intent_threshold=float(
+                env.INTENT_THRESHOLD
+            )
+        )
+
+
+        self.entity_combiner = EntityCombiner()
+
+
+
+    def predict(
+        self,
+        text:str
+    ):
+
+        encoded = self.tokenizer(
+            text,
+            return_tensors="pt",
+            return_offsets_mapping=True,
+            padding=True,
+            truncation=True
+        )
+
+
+        with torch.no_grad():
+
+            output:ModelOutput = self.model(
+                input_ids=encoded["input_ids"],
+                attention_mask=encoded["attention_mask"]
+            )
+
+
+        intents = self.mapper.map_intents(
+            output.intent_logits
+        )
+
+
+        entity_tokens = self.mapper.map_entities(
+            output.entity_logits,
+            text,
+            encoded["offset_mapping"][0]
+        )
+
+
+        entities = self.entity_combiner.combine(
+            entity_tokens
+        )
+
+
+        return {
+            "text": text,
+            "intents": intents,
+            "entities": entities
+        }
+
+
+
+def parse_args():
+
+    parser = argparse.ArgumentParser(
+        description="Banking NLU inference"
     )
-    entities = entity_combiner.combine(entity_tokens)
-    print(f"TEXT : {text}")
-    print("==== intent prediction ====")
-    print(intents)
-    print("==== entity prediction ====")
-    print(entities)
+
+
+    parser.add_argument(
+        "-m",
+        "--message",
+        type=str,
+        required=False,
+        default=env.TEST_PROMPT,
+        help="Input Burmese sentence"
+    )
+
+
+    return parser.parse_args()
+
+
+
+def main():
+
+    args = parse_args()
+
+
+    inference = NLUInference()
+
+
+    result = inference.predict(
+        args.message
+    )
+
+
+    print(
+        f"TEXT : {result['text']}"
+    )
+
+
+    print(
+        "==== intent prediction ===="
+    )
+
+    print(
+        result["intents"]
+    )
+
+
+    print(
+        "==== entity prediction ===="
+    )
+
+    print(
+        result["entities"]
+    )
+
+
+
+if __name__ == "__main__":
+    main()
