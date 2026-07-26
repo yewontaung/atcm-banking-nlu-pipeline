@@ -50,7 +50,7 @@ class NLUInference:
             checkpoint["model"]
         )
 
-        self.model.to(DEVICE)
+        self.model.to(self.DEVICE)
         self.model.eval()
 
         self.tokenizer:PreTrainedTokenizerBase = (
