@@ -145,7 +145,7 @@ loss_fn = TransformerNLULoss()
 # Training
 # ==========================
 
-EPOCHS = env.EPOCHS
+EPOCHS = int(env.EPOCHS)
 
 for epoch in range(EPOCHS):
     model.train()
@@ -208,7 +208,7 @@ torch.save(
         "intent_encoder": intent_encoder.label_to_id,
         "entity_encoder": entity_encoder.label_to_id
     },
-    f"{env.CHECKPOINT_PATH}/banking_nlu.pt"
+    f"{env.CHECKPOINT_PATH}/{env.SAVED_MODEL_NAME_PREFIX}_{env.TRAINING_DATASIZE}.pt"
 )
 
 print(

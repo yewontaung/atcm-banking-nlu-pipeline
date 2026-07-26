@@ -24,7 +24,7 @@ model = BankingNLUTransformerModel(
 )
 
 checkpoint = torch.load(
-    f"{env.CHECKPOINT_PATH}/banking_nlu.pt",
+    f"{env.CHECKPOINT_PATH}/{env.SAVED_MODEL_NAME_PREFIX}_{env.TRAINING_DATASIZE}.pt",
     map_location="cpu"
 )
 
