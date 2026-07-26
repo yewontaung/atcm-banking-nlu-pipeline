@@ -66,23 +66,36 @@ class PostProcessingLogitMapper:
 
         return enitites
 
+
 class EntityCombiner:
 
-    def combine(self, predictions:list[EntityTokenPrediction]) -> list[EntityPrediction]:
+    def combine(
+        self,
+        predictions:list[EntityTokenPrediction]
+    ) -> list[EntityPrediction]:
+
         entities:list[EntityPrediction] = []
         current:EntityPrediction | None = None
 
-        for prediction in predictions:
-            label = prediction.label
-            if label == "O":
-                if current is None:
-                    entities.append(current)
-                    current = None
-                continue
 
-            if label.startswith("B-"):
+        for prediction in predictions:
+
+            label = prediction.label
+
+
+            if label == "O":
                 if current is not None:
                     entities.append(current)
+                    current = None
+
+                continue
+
+
+            if label.startswith("B-"):
+
+                if current is not None:
+                    entities.append(current)
+
 
                 current = EntityPrediction(
                     prediction_id=prediction.prediction_id,
@@ -95,8 +108,12 @@ class EntityCombiner:
 
                 continue
 
+
             if label.startswith("I-"):
+
                 entity_label = label[2:]
+
+
                 if current is None:
                     current = EntityPrediction(
                         prediction_id=prediction.prediction_id,
@@ -106,10 +123,14 @@ class EntityCombiner:
                         end_index=prediction.end_index,
                         value=prediction.value,
                     )
+
                     continue
 
+
                 if current.label != entity_label:
+
                     entities.append(current)
+
                     current = EntityPrediction(
                         prediction_id=prediction.prediction_id,
                         label=entity_label,
@@ -118,14 +139,22 @@ class EntityCombiner:
                         end_index=prediction.end_index,
                         value=prediction.value,
                     )
+
                     continue
+
 
                 current.end_index = prediction.end_index
                 current.value += prediction.value
 
-                if prediction.confidence > current.confidence:
-                    current.confidence = prediction.confidence
+                current.confidence = max(
+                    current.confidence,
+                    prediction.confidence
+                )
 
-            if current is not None:
-                entities.append(current)
+
+        # IMPORTANT: after loop finishes
+        if current is not None:
+            entities.append(current)
+
+
         return entities

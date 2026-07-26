@@ -145,7 +145,7 @@ loss_fn = TransformerNLULoss()
 # Training
 # ==========================
 
-EPOCHS = 5
+EPOCHS = env.EPOCHS
 
 for epoch in range(EPOCHS):
     model.train()
