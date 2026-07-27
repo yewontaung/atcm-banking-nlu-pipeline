@@ -26,5 +26,9 @@
     {
         "intent_id": 7,
         "label": "pay_bill"
+    },
+    {
+        "intent_id": 8,
+        "label": "out_of_scope"
     }
 ]
