@@ -1,29 +1,27 @@
+from dataprocessors.encoders.bio import LabelBIOEncoder
 from dataprocessors.preprocessors import DataPreProcessor
 
-from dataprocessors.tokenizers import TokenizationProcessor
+from dataprocessors.tokenizers import TextTokenizer, TransformerModelTokenizationProcessor, SpanBasedModelTokenizationProcessor
 
-from dataprocessors.encoders import (
-    IntentEncoder,
-    EntityEncoder
-)
+from dataprocessors.encoders.classification import IntentClassificationEncoder
 
-intent_encoder = IntentEncoder.from_file("./metadata/intents.json")
+intent_encoder = LabelBIOEncoder.from_file("./metadata/intents.json")
 
-entity_encoder = EntityEncoder.from_file("./metadata/entities.json")
+entity_encoder = LabelBIOEncoder.from_file("./metadata/entities.json")
 
 processor = DataPreProcessor()
 
 samples = processor.process_file(
-    "datasets/testing.json"
+    "datasets/training.json"
 )
-
-tokenizer = TokenizationProcessor(
-    "xlm-roberta-base",
+tokenizer = TextTokenizer("xlm-roberta-base")
+tokenization_processor = SpanBasedModelTokenizationProcessor(
+    tokenizer,
     intent_encoder,
     entity_encoder
 )
 
-result = tokenizer.process(
+result = tokenization_processor.process(
     samples[0]
 )
 

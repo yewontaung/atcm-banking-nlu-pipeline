@@ -3,21 +3,17 @@ import torch
 
 from transformers import AutoTokenizer, PreTrainedTokenizerBase
 
-from models.transformer_model import BankingNLUTransformerModel
+from models.model_01_transformer_model.model import BankingNLUTransformerModel
 
-from dataprocessors.encoders import (
-    IntentEncoder,
-    EntityEncoder
-)
+from dataprocessors.encoders.classification import IntentClassificationEncoder
+from dataprocessors.encoders.bio import LabelBIOEncoder
 
-from dataprocessors.postprocessors import (
-    EntityCombiner,
-    PostProcessingLogitMapper
-)
+from dataprocessors.postprocessors.logit_mappers.classification import ClassificationLogitMapper
+from dataprocessors.postprocessors.logit_mappers.bio import EntityCombiner
 
 from utils import env
 from utils.loader import load_modelname
-from utils.schemas import ModelOutput
+from utils.schemas import TransformerModelOutput
 
 
 class NLUInference:
@@ -27,10 +23,10 @@ class NLUInference:
             if torch.cuda.is_available()
             else "cpu"
         )        
-        self.intent_encoder = IntentEncoder.from_file(
+        self.intent_encoder = IntentClassificationEncoder.from_file(
             "./metadata/intents.json"
         )
-        self.entity_encoder = EntityEncoder.from_file(
+        self.entity_encoder = LabelBIOEncoder.from_file(
             "./metadata/entities.json"
         )
 
@@ -59,7 +55,7 @@ class NLUInference:
             )
         )
 
-        self.mapper = PostProcessingLogitMapper(
+        self.mapper = ClassificationLogitMapper(
             intent_encoder=self.intent_encoder,
             entity_encoder=self.entity_encoder,
             intent_threshold=float(
@@ -83,7 +79,7 @@ class NLUInference:
 
         with torch.no_grad():
 
-            output:ModelOutput = self.model(
+            output:TransformerModelOutput = self.model(
                 input_ids=encoded["input_ids"].to(self.DEVICE),
                 attention_mask=encoded["attention_mask"].to(self.DEVICE)
             )

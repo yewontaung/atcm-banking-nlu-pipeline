@@ -1,0 +1,37 @@
+{
+    "transfer_money": {
+        "required": [
+            "receiver",
+            "amount"
+        ]
+    },
+    "transaction_complaint": {
+        "required": []
+    },
+    "verify_transaction": {
+        "required": [
+            "sender",
+            "amount"
+        ]
+    },
+    "view_transactions": {
+        "required": [
+            "trx_type"
+        ]
+    },
+    "customer_support": {
+        "required": []
+    },
+    "mobile_topup": {
+        "required": [
+            "phone_number",
+            "amount"
+        ]
+    },
+    "pay_bill": {
+        "required": [
+            "bill_type",
+            "amount"
+        ]
+    }
+}

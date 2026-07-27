@@ -4,7 +4,9 @@ from pydantic import BaseModel
 from torch import Tensor
 
 
-# Metadata format
+# ==========================================================
+# Metadata schemas
+# ==========================================================
 class IntentMeta(BaseModel):
     intent_id:int
     label:str
@@ -13,8 +15,9 @@ class EntityMeta(BaseModel):
     entity_id:int
     label:str
 
-# Exported dataset structure
-
+# ==========================================================
+# Raw exported dataset schemas
+# ==========================================================
 class ExportedEntity(BaseModel):
     datasetintentner_id:int
     ner_id:int
@@ -35,52 +38,97 @@ class ExportedDataset(BaseModel):
     text:str
     intents:list[ExportedIntent]
 
-# Processed dataset structure
+# ==========================================================
+# Generic span schemas
+# ==========================================================
+class Span(BaseModel):
+    label: str
+    start_index: int
+    end_index: int
 
-class EntitySpan(BaseModel):
-    label:str
-    start_index:int
-    end_index:int
+class EntitySpan(Span):
+    pass
 
-class IntentSpan(BaseModel):
-    label:str
-    start_index:int
-    end_index:int
-    entities:list[EntitySpan]
+class IntentSpan(Span):
+    entities: list[EntitySpan]
 
 class ProcessedDataset(BaseModel):
     text:str
     intents:list[IntentSpan]
 
-# Tokenized dataset structure
+# ==========================================================
+# Tokenized common schema
+# ==========================================================
 class TokenizedDataset(BaseModel):
-    text:str
-    input_ids:list[int]
-    attention_mask:list[int]
+    """
+    Common tokenized data shared by all models
+    """
+    text: str
+    input_ids: list[int]
+    attention_mask: list[int]
+    offset_mapping: list[tuple[int, int]] | None = None
+
+# ==========================================================
+# Model specific training samples
+# ==========================================================
+class TransformerTokenizedDataset(TokenizedDataset):
+    """
+    Model 1:
+    Sentence-level intent classification
+    + BIO entity extraction
+    """
     intent_labels:list[int]
     ner_labels:list[int]
 
-# Model schemas
+class SpanIntentTokenizedDataset(TokenizedDataset):
+    """
+    Model 2:
+    Intent span extraction
+    + BIO entity extraction
+    """
+    intent_span_labels: list[int]
+    ner_labels: list[int]
+
+# ==========================================================
+# Model IO
+# ==========================================================
+
 @dataclass
 class ModelInput:
     input_ids: Tensor
     attention_mask: Tensor
+
+@dataclass
+class TransformerModelInput(ModelInput):
     intent_labels: Tensor
     ner_labels: Tensor
 
 @dataclass
-class ModelOutput:
-    intent_logits: Tensor
-    entity_logits: Tensor
+class SpanIntentModelInput(ModelInput):
+    intent_span_labels: Tensor
+    ner_labels: Tensor
 
+@dataclass
+class ModelOutput:
     model_config = {
         "arbitrary_types_allowed": True
     }
 
+@dataclass
+class TransformerModelOutput(ModelOutput):
+    intent_logits: Tensor
+    entity_logits: Tensor
 
+@dataclass
+class SpanIntentModelOutput(ModelOutput):
+    intent_span_logits: Tensor
+    entity_logits: Tensor
+
+
+# ==========================================================
 # Prediction schemas
-
-class IntentPrediction(BaseModel):
+# ==========================================================
+class ClassifiedIntentPrediction(BaseModel):
     prediction_id:int
     label:str
     confidence:float
@@ -101,6 +149,7 @@ class EntityPrediction(BaseModel):
     start_index:int
     end_index:int
 
+# Final API response schemas
 class PredictedEntity(BaseModel):
     label:str
     value:str

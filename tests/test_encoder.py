@@ -1,12 +1,12 @@
-from dataprocessors.encoders import (
-    IntentEncoder,
-    EntityEncoder
+from dataprocessors.encoders.classification import (
+    IntentClassificationEncoder,
+    EntityLabelBIOEncoder
 )
 
 # -----------------------
 # Intent test
 # -----------------------
-intent_encoder = IntentEncoder(
+intent_encoder = IntentClassificationEncoder(
     labels=[
         "transfer_money",
         "check_balance",
@@ -39,7 +39,7 @@ print(
 # -----------------------
 
 
-entity_encoder = EntityEncoder(
+entity_encoder = EntityLabelBIOEncoder(
     entities=[
         "receiver",
         "amount"

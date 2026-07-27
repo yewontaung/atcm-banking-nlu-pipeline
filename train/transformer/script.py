@@ -3,18 +3,16 @@ import torch
 from torch.optim import AdamW
 from torch.utils.data import DataLoader
 
-
-from dataprocessors.encoders import (
-    IntentEncoder,
-    EntityEncoder
-)
+from dataprocessors.encoders.classification import IntentClassificationEncoder
+from dataprocessors.encoders.bio import LabelBIOEncoder
 
 from dataprocessors.preprocessors import (
     DataPreProcessor
 )
 
 from dataprocessors.tokenizers import (
-    TokenizationProcessor
+    TextTokenizer,
+    TransformerModelTokenizationProcessor
 )
 
 
@@ -27,12 +25,12 @@ from dataloader.collator import (
 )
 
 
-from models.transformer_model import (
+from models.model_01_transformer_model.model import (
     BankingNLUTransformerModel
 )
 
 
-from train.transformer.loss import (
+from models.model_01_transformer_model.loss import (
     TransformerNLULoss
 )
 from utils import env
@@ -49,8 +47,8 @@ DEVICE = (
 # ==========================
 # Create encoders
 # ==========================
-intent_encoder = IntentEncoder.from_file("./metadata/intents.json")
-entity_encoder = EntityEncoder.from_file("./metadata/entities.json")
+intent_encoder = IntentClassificationEncoder.from_file("./metadata/intents.json")
+entity_encoder = LabelBIOEncoder.from_file("./metadata/entities.json")
 print(
     "Intent labels:",
     intent_encoder.label_to_id
@@ -76,9 +74,10 @@ print(
 # Tokenization
 # ==========================
 
+tokenizer = TextTokenizer("xlm-roberta-base")
 
-tokenizer_processor = TokenizationProcessor(
-    model_name="xlm-roberta-base",
+tokenizer_processor = TransformerModelTokenizationProcessor(
+    tokenizer=tokenizer,
     intent_encoder=intent_encoder,
     entity_encoder=entity_encoder
 )
@@ -104,7 +103,7 @@ dataset = NLUDataset(samples=tokenized_data)
 # ==========================
 
 collator = NLUCollator(
-    pad_token_id=tokenizer_processor.tokenizer.pad_token_id
+    pad_token_id=tokenizer_processor.tokenizer.tokenizer.pad_token_id
 )
 
 train_loader = DataLoader(

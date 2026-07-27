@@ -3,13 +3,13 @@ from torch.utils.data import DataLoader
 from dataloader.dataset import NLUDataset
 from dataloader.collator import NLUCollator
 
-from utils.schemas import TokenizedDataset
+from utils.schemas import TransformerTokenizedDataset
 
 
 
 samples = [
 
-    TokenizedDataset(
+    TransformerTokenizedDataset(
 
         text="hello",
 
@@ -32,7 +32,7 @@ samples = [
     ),
 
 
-    TokenizedDataset(
+    TransformerTokenizedDataset(
 
         text="hello world",
 

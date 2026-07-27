@@ -1,10 +1,7 @@
 import json
 
-import torch
-
-from dataprocessors.encoders import EntityEncoder, IntentEncoder
 from dataprocessors.validators import DataValidator
-from utils.schemas import EntityTokenPrediction, EntitySpan, ExportedDataset, IntentPrediction, IntentSpan, ProcessedDataset
+from utils.schemas import EntitySpan, ExportedDataset, IntentSpan, ProcessedDataset
 
 
 class DataPreProcessor:

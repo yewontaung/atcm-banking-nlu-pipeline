@@ -1,6 +1,6 @@
 import torch
 
-from models.transformer_model import (
+from models.model_01_transformer_model.model import (
     BankingNLUTransformerModel
 )
 

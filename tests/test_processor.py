@@ -1,10 +1,11 @@
 
 from dataprocessors.preprocessors import DataPreProcessor
+from utils import env
 
 
 processor = DataPreProcessor()
 
-samples = processor.process_file("./datasets/testing.json")
+samples = processor.process_file(f"{env.TRAINING_FILE}")
 
 for sample in samples:
     print("====================")

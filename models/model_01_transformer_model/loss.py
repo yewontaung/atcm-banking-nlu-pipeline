@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-from utils.schemas import ModelOutput
+from utils.schemas import TransformerModelOutput
 
 class TransformerNLULoss:
 
@@ -8,7 +8,7 @@ class TransformerNLULoss:
         self.intent_loss = nn.BCEWithLogitsLoss()
         self.entity_loss = nn.CrossEntropyLoss()
 
-    def __call__(self, outputs:ModelOutput, intent_labels, entity_labels):
+    def __call__(self, outputs:TransformerModelOutput, intent_labels, entity_labels):
         intent_loss = self.intent_loss(
             outputs.intent_logits,
             intent_labels
