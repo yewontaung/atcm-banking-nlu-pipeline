@@ -86,7 +86,7 @@ class SpanIntentTokenizedDataset(TokenizedDataset):
     Intent span extraction
     + BIO entity extraction
     """
-    intent_span_labels: list[int]
+    intent_labels: list[int]
     ner_labels: list[int]
 
 # ==========================================================
@@ -104,7 +104,7 @@ class TransformerModelInput(ModelInput):
     ner_labels: Tensor
 
 @dataclass
-class SpanIntentModelInput(ModelInput):
+class TokenIntentModelInput(ModelInput):
     intent_span_labels: Tensor
     ner_labels: Tensor
 
@@ -120,8 +120,8 @@ class TransformerModelOutput(ModelOutput):
     entity_logits: Tensor
 
 @dataclass
-class SpanIntentModelOutput(ModelOutput):
-    intent_span_logits: Tensor
+class TokenIntentModelOutput(ModelOutput):
+    intent_logits: Tensor
     entity_logits: Tensor
 
 
@@ -133,7 +133,7 @@ class ClassifiedIntentPrediction(BaseModel):
     label:str
     confidence:float
 
-class EntityTokenPrediction(BaseModel):
+class TokenPrediction(BaseModel):
     prediction_id:int
     label:str
     value:str
@@ -141,7 +141,7 @@ class EntityTokenPrediction(BaseModel):
     start_index:int
     end_index:int
 
-class EntityPrediction(BaseModel):
+class MappedTokenPrediction(BaseModel):
     prediction_id:int
     label:str
     value:str

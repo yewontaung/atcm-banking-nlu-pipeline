@@ -97,7 +97,7 @@ class SpanBasedModelTokenizationProcessor(BaseTokenizationProcessor[SpanIntentTo
             input_ids=tokens["input_ids"],
             attention_mask=tokens["attention_mask"],
             offset_mapping=tokens["offset_mapping"],
-            intent_span_labels=self.intent_labeler.create(sample.intents, tokens["offset_mapping"]),
+            intent_labels=self.intent_labeler.create(sample.intents, tokens["offset_mapping"]),
             ner_labels=self.create_entity_labels(sample, tokens["offset_mapping"]),
         )
 

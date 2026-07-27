@@ -60,7 +60,8 @@ dataset = NLUDataset(samples)
 
 
 collator = NLUCollator(
-    pad_token_id=1
+    pad_token_id=1,
+    intent_mode="token_span"
 )
 
 

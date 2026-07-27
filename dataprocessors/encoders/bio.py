@@ -18,7 +18,7 @@ class LabelBIOEncoder:
             index:label for index, label in enumerate(labels)
         }
 
-        self.no_of_entities:Final[int] = len(labels)
+        self.no_of_labels:Final[int] = len(labels)
 
     def encode(self, entities:list[str]) -> list[int]:
         return [

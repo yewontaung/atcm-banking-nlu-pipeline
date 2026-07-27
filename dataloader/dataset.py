@@ -1,10 +1,10 @@
 from torch.utils.data import Dataset
 
-from utils.schemas import TransformerTokenizedDataset
+from utils.schemas import TransformerTokenizedDataset, SpanIntentTokenizedDataset
 
 class NLUDataset(Dataset):
 
-    def __init__(self, samples:list[TransformerTokenizedDataset]):
+    def __init__(self, samples:list[TransformerTokenizedDataset | SpanIntentTokenizedDataset]):
         self.samples = samples
 
     def __len__(self):

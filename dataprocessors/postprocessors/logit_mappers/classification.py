@@ -2,7 +2,7 @@ import torch
 
 from dataprocessors.encoders.bio import LabelBIOEncoder
 from dataprocessors.encoders.classification import IntentClassificationEncoder
-from utils.schemas import EntityTokenPrediction, ClassifiedIntentPrediction
+from utils.schemas import TokenPrediction, ClassifiedIntentPrediction
 
 
 class ClassificationLogitMapper:
@@ -36,11 +36,11 @@ class ClassificationLogitMapper:
             self, 
             logits: torch.Tensor,
             text:str,
-            offset_mapping:torch.Tensor) -> list[EntityTokenPrediction]:
+            offset_mapping:torch.Tensor) -> list[TokenPrediction]:
 
         token_predictions = torch.argmax(logits, dim=-1)[0]
 
-        enitites:list[EntityTokenPrediction] = []
+        enitites:list[TokenPrediction] = []
 
         for token_id, offset in zip(token_predictions, offset_mapping):
             label_id = int(token_id)
@@ -56,7 +56,7 @@ class ClassificationLogitMapper:
             if start_index == end_index:
                 continue
 
-            enitites.append(EntityTokenPrediction(
+            enitites.append(TokenPrediction(
                 prediction_id=label_id,
                 label=label,
                 confidence=confidence,

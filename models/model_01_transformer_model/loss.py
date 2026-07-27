@@ -11,7 +11,7 @@ class TransformerNLULoss:
     def __call__(self, outputs:TransformerModelOutput, intent_labels, entity_labels):
         intent_loss = self.intent_loss(
             outputs.intent_logits,
-            intent_labels
+            intent_labels.float()
         )
 
         entity_loss = self.entity_loss(

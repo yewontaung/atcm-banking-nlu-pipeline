@@ -9,7 +9,7 @@ from dataprocessors.encoders.classification import IntentClassificationEncoder
 from dataprocessors.encoders.bio import LabelBIOEncoder
 
 from dataprocessors.postprocessors.logit_mappers.classification import ClassificationLogitMapper
-from dataprocessors.postprocessors.logit_mappers.bio import EntityCombiner
+from dataprocessors.postprocessors.logit_mappers.bio import BIOCombiner
 
 from utils import env
 from utils.loader import load_modelname
@@ -33,7 +33,7 @@ class NLUInference:
         self.model = BankingNLUTransformerModel(
             model_name="xlm-roberta-base",
             intent_count=self.intent_encoder.no_of_lables,
-            entity_count=self.entity_encoder.no_of_entities
+            entity_count=self.entity_encoder.no_of_labels
         )
         checkpoint_path = (
             f"{env.CHECKPOINT_PATH}/{load_modelname()}"
@@ -63,7 +63,7 @@ class NLUInference:
             )
         )
 
-        self.entity_combiner = EntityCombiner()
+        self.entity_combiner = BIOCombiner()
 
 
     def predict(self, text:str):
