@@ -82,8 +82,8 @@ def main():
     intents = result["intents"]
     entities = result["entities"]
     prediction = builder.build(args.message, intents, entities)
-
-    print(prediction)
+    print("========= Prediction =========")
+    print(prediction.model_dump_json())
 
 if __name__ == "__main__":
     main()
