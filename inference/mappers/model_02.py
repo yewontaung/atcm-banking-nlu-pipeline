@@ -36,7 +36,7 @@ class Model02PredictionMapper(BasePredictionMapper):
             offset_mapping
         )
 
-        intent_spans = self.combiner.combine(
+        intents = self.combiner.combine(
             text,
             intent_tokens
         )
@@ -48,6 +48,6 @@ class Model02PredictionMapper(BasePredictionMapper):
 
         return {
             "text":text,
-            "intent_spans":intent_spans,
+            "intents":intents,
             "entities":entity_spans
         }

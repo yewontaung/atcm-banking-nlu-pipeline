@@ -1,4 +1,4 @@
-from utils.schemas import MappedTokenPrediction, TokenPrediction
+from utils.schemas import SpanPrediction, TokenPrediction
 
 
 import torch
@@ -91,10 +91,10 @@ class BIOLogitMapper:
 
 class BIOCombiner:
 
-    def combine(self, text: str, predictions: list[TokenPrediction]) -> list[MappedTokenPrediction]:
+    def combine(self, text: str, predictions: list[TokenPrediction]) -> list[SpanPrediction]:
 
-        entities: list[MappedTokenPrediction] = []
-        current: MappedTokenPrediction | None = None
+        entities: list[SpanPrediction] = []
+        current: SpanPrediction | None = None
 
         for prediction in predictions:
             label = prediction.label
@@ -119,7 +119,7 @@ class BIOCombiner:
                     ]
                     entities.append(current)
 
-                current = MappedTokenPrediction(
+                current = SpanPrediction(
                     prediction_id=prediction.prediction_id,
                     label=label[2:],
                     confidence=prediction.confidence,
@@ -140,7 +140,7 @@ class BIOCombiner:
                 # No previous entity
                 if current is None:
 
-                    current = MappedTokenPrediction(
+                    current = SpanPrediction(
                         prediction_id=prediction.prediction_id,
                         label=entity_label,
                         confidence=prediction.confidence,
@@ -161,7 +161,7 @@ class BIOCombiner:
                         current.end_index
                     ]
                     entities.append(current)
-                    current = MappedTokenPrediction(
+                    current = SpanPrediction(
                         prediction_id=prediction.prediction_id,
                         label=entity_label,
                         confidence=prediction.confidence,

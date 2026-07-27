@@ -141,7 +141,7 @@ class TokenPrediction(BaseModel):
     start_index:int
     end_index:int
 
-class MappedTokenPrediction(BaseModel):
+class SpanPrediction(BaseModel):
     prediction_id:int
     label:str
     value:str

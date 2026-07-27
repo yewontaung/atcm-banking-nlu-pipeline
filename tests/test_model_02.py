@@ -4,6 +4,7 @@ import torch
 from transformers import AutoTokenizer
 
 from dataprocessors.encoders.bio import LabelBIOEncoder
+from dataprocessors.postprocessors.prediction_builder import PredictionBuilder
 from inference.mappers.model_02 import Model02PredictionMapper
 from inference.predictor import Predictor
 from models.model_02_token_intent_transformer_model.model import BankingNLUTokenIntentTransformerModel
@@ -62,19 +63,27 @@ def main():
     result = predictor.predict(
         args.message
     )
+    builder = PredictionBuilder()
+
     print(
         f"\nTEXT : {result['text']}"
     )
     print(
-        "\n===== Intent Span ====="
+        "\n===== Intents ====="
     )
-    for intent in result["intent_spans"]:
+    for intent in result["intents"]:
         print(intent)
     print(
         "\n===== Entities ====="
     )
     for entity in result["entities"]:
         print(entity)
+
+    intents = result["intents"]
+    entities = result["entities"]
+    prediction = builder.build(args.message, intents, entities)
+
+    print(prediction)
 
 if __name__ == "__main__":
     main()
