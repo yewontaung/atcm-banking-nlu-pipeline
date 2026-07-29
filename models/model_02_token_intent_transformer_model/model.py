@@ -3,7 +3,7 @@ import torch.nn as nn
 
 from utils.schemas import TokenIntentModelOutput
 
-class BankingNLUTokenIntentTransformerModel(nn.Module):
+class Model02BankingNLUTokenIntentTransformerModel(nn.Module):
 
     def __init__(
         self,

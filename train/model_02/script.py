@@ -8,7 +8,7 @@ from dataprocessors.encoders.bio import LabelBIOEncoder
 from dataprocessors.preprocessors import DataPreProcessor
 from dataprocessors.tokenizers import SpanBasedModelTokenizationProcessor, TextTokenizer
 from models.model_02_token_intent_transformer_model.loss import TokenIntentEntityLoss
-from models.model_02_token_intent_transformer_model.model import BankingNLUTokenIntentTransformerModel
+from models.model_02_token_intent_transformer_model.model import Model02BankingNLUTokenIntentTransformerModel
 from train.trainer import NLUModelTrainer
 from utils import env
 from utils.checkpoint import save_checkpoint
@@ -48,7 +48,7 @@ loader = DataLoader(
     collate_fn=collator
 )
 
-model = BankingNLUTokenIntentTransformerModel(
+model = Model02BankingNLUTokenIntentTransformerModel(
     model_name="xlm-roberta-base",
     intent_count=intent_encoder.no_of_labels,
     entity_count=entity_encoder.no_of_labels,

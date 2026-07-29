@@ -7,9 +7,9 @@ from dataprocessors.encoders.bio import LabelBIOEncoder
 from dataprocessors.postprocessors.prediction_builder import PredictionBuilder
 from inference.mappers.model_02 import Model02PredictionMapper
 from inference.predictor import Predictor
-from models.model_02_token_intent_transformer_model.model import BankingNLUTokenIntentTransformerModel
+from models.model_02_token_intent_transformer_model.model import Model02BankingNLUTokenIntentTransformerModel
 from utils import env
-from utils.loader import load_checkpoint, load_modelname
+from utils.loader import load_saved_model, load_modelname
 
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -18,7 +18,7 @@ def create_predictor() -> Predictor:
     intent_encoder = LabelBIOEncoder.from_file("./metadata/intents.json")
     entity_encoder = LabelBIOEncoder.from_file("./metadata/entities.json")
 
-    model = BankingNLUTokenIntentTransformerModel(
+    model = Model02BankingNLUTokenIntentTransformerModel(
         model_name="xlm-roberta-base",
         intent_count=intent_encoder.no_of_labels,
         entity_count=entity_encoder.no_of_labels
@@ -26,7 +26,7 @@ def create_predictor() -> Predictor:
 
     checkpoint_path = f"{env.SAVED_MODEL_PATH}/{load_modelname()}"
 
-    model = load_checkpoint(model, checkpoint_path, DEVICE)
+    model = load_saved_model(model, checkpoint_path, DEVICE)
 
     tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
 
