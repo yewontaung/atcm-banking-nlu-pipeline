@@ -45,7 +45,7 @@ def main():
         loop = False
     while loop:
         prompt = input("Enter prompt : ")
-        if prompt.lower() == "exit" or prompt.lower() == 0:
+        if prompt.lower() == "exit" or prompt.lower() == "0":
             break
         prediction = predictor.predict(prompt)
         print("======== Model Result =========")
