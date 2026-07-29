@@ -7,7 +7,7 @@ from dataprocessors.postprocessors.logit_mappers.bio import (
     BIOCombiner,
     BIOLogitMapper,
 )
-from utils.schemas import TokenIntentModelOutput
+from utils.schemas import Model02LogitOutput
 
 
 class Model02PredictionMapper(BasePredictionMapper):
@@ -23,7 +23,7 @@ class Model02PredictionMapper(BasePredictionMapper):
         self.combiner = BIOCombiner()
 
 
-    def map(self, text:str, outputs:TokenIntentModelOutput, offset_mapping:Tensor):
+    def map(self, text:str, outputs:Model02LogitOutput, offset_mapping:Tensor):
         intent_tokens = self.intent_mapper.map(
             outputs.intent_logits,
             text,

@@ -120,7 +120,7 @@ class TransformerModelOutput(ModelOutput):
     entity_logits: Tensor
 
 @dataclass
-class TokenIntentModelOutput(ModelOutput):
+class Model02LogitOutput(ModelOutput):
     intent_logits: Tensor
     entity_logits: Tensor
 

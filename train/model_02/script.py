@@ -6,9 +6,9 @@ from dataloader.collator import NLUCollator
 from dataloader.dataset import NLUDataset
 from dataprocessors.encoders.bio import LabelBIOEncoder
 from dataprocessors.preprocessors import DataPreProcessor
-from dataprocessors.tokenizers import SpanBasedModelTokenizationProcessor, TextTokenizer
-from models.model_02_token_intent_transformer_model.loss import TokenIntentEntityLoss
-from models.model_02_token_intent_transformer_model.model import Model02BankingNLUTokenIntentTransformerModel
+from dataprocessors.tokenizers import Model02TokenizationProcessor, TextTokenizer
+from models.model_02_token_intent_transformer_model.loss import Model02TokenIntentEntityLoss
+from models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
 from train.trainer import NLUModelTrainer
 from utils import env
 from utils.checkpoint import save_checkpoint
@@ -26,7 +26,7 @@ processed = processor.process_file(f"{env.TRAINING_FILE}")
 
 tokenizer = TextTokenizer("xlm-roberta-base")
 
-tokenization_processor = SpanBasedModelTokenizationProcessor(
+tokenization_processor = Model02TokenizationProcessor(
     tokenizer=tokenizer,
     intent_encoder=intent_encoder,
     entity_encoder=entity_encoder
@@ -48,7 +48,7 @@ loader = DataLoader(
     collate_fn=collator
 )
 
-model = Model02BankingNLUTokenIntentTransformerModel(
+model = Model02BankingNLUTransformerModel(
     model_name="xlm-roberta-base",
     intent_count=intent_encoder.no_of_labels,
     entity_count=entity_encoder.no_of_labels,
@@ -58,7 +58,7 @@ model.to(DEVICE)
 
 optimizer = AdamW(model.parameters(), lr=2e-5)
 
-loss_fn = TokenIntentEntityLoss()
+loss_fn = Model02TokenIntentEntityLoss()
 
 trainer = NLUModelTrainer(
     model=model,

@@ -1,9 +1,9 @@
 from transformers import AutoModel
 import torch.nn as nn
 
-from utils.schemas import TokenIntentModelOutput
+from utils.schemas import Model02LogitOutput
 
-class Model02BankingNLUTokenIntentTransformerModel(nn.Module):
+class Model02BankingNLUTransformerModel(nn.Module):
 
     def __init__(
         self,
@@ -50,7 +50,7 @@ class Model02BankingNLUTokenIntentTransformerModel(nn.Module):
             hidden_state
         )
 
-        return TokenIntentModelOutput(
+        return Model02LogitOutput(
             intent_logits=intent_logits,
             entity_logits=entity_logits
         )

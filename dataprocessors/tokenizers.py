@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import Generic, Protocol, TypeVar
+from typing import Generic, TypeVar
 
 from transformers import AutoTokenizer, SentencePieceBackend
 
 from dataprocessors.encoders.bio import LabelBIOEncoder
 from dataprocessors.encoders.classification import IntentClassificationEncoder
-from utils.schemas import EntitySpan, IntentSpan, ProcessedDataset, Span, TokenizedDataset, TransformerTokenizedDataset, SpanIntentTokenizedDataset
+from utils.schemas import EntitySpan, ProcessedDataset, Span, TokenizedDataset, TransformerTokenizedDataset, SpanIntentTokenizedDataset
 
 R = TypeVar("R", bound=TokenizedDataset)
 
@@ -82,7 +82,7 @@ class TransformerModelTokenizationProcessor(BaseTokenizationProcessor[Transforme
         return self.entity_labeler.create(entities, offsets)
 
 
-class SpanBasedModelTokenizationProcessor(BaseTokenizationProcessor[SpanIntentTokenizedDataset]):
+class Model02TokenizationProcessor(BaseTokenizationProcessor[SpanIntentTokenizedDataset]):
 
     def __init__(self, tokenizer:TextTokenizer, intent_encoder:LabelBIOEncoder, entity_encoder:LabelBIOEncoder):
         self.tokenizer = tokenizer

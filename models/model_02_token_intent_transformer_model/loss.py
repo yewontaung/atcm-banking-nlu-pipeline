@@ -1,10 +1,10 @@
 from torch import Tensor
 import torch.nn as nn
 
-from utils.schemas import TokenIntentModelOutput
+from utils.schemas import Model02LogitOutput
 
 
-class TokenIntentEntityLoss(nn.Module):
+class Model02TokenIntentEntityLoss(nn.Module):
 
     def __init__(
         self,
@@ -28,7 +28,7 @@ class TokenIntentEntityLoss(nn.Module):
 
     def forward(
         self,
-        output:TokenIntentModelOutput,
+        output:Model02LogitOutput,
         intent_labels:Tensor,
         entity_labels:Tensor
     ):

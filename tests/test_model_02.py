@@ -7,7 +7,7 @@ from dataprocessors.encoders.bio import LabelBIOEncoder
 from dataprocessors.postprocessors.prediction_builder import PredictionBuilder
 from inference.mappers.model_02 import Model02PredictionMapper
 from inference.predictor import Predictor
-from models.model_02_token_intent_transformer_model.model import Model02BankingNLUTokenIntentTransformerModel
+from models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
 from utils import env
 from utils.loader import load_saved_model, load_modelname
 
@@ -18,7 +18,7 @@ def create_predictor() -> Predictor:
     intent_encoder = LabelBIOEncoder.from_file("./metadata/intents.json")
     entity_encoder = LabelBIOEncoder.from_file("./metadata/entities.json")
 
-    model = Model02BankingNLUTokenIntentTransformerModel(
+    model = Model02BankingNLUTransformerModel(
         model_name="xlm-roberta-base",
         intent_count=intent_encoder.no_of_labels,
         entity_count=entity_encoder.no_of_labels

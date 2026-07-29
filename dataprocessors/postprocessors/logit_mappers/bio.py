@@ -13,6 +13,24 @@ class BIOLogitMapper:
     def __init__(self, encoder: LabelBIOEncoder):
         self.encoder = encoder
 
+    def decode(self, logits:torch.Tensor, text:str, offset_mapping: torch.Tensor) -> list[str]:
+        result = []
+        token_ids = torch.argmax(
+                    logits,
+                    dim=-1
+                )[0]
+
+        for index, (token_id, offset) in enumerate(
+            zip(token_ids, offset_mapping)
+        ):
+            label_id = int(token_id)
+            label = self.encoder.id_to_label[label_id]
+            result.append(label)
+
+        return result
+        
+        
+
     def map(
         self,
         logits: torch.Tensor,
@@ -93,7 +111,7 @@ class BIOCombiner:
 
     def combine(self, text: str, predictions: list[TokenPrediction]) -> list[SpanPrediction]:
 
-        entities: list[SpanPrediction] = []
+        items: list[SpanPrediction] = []
         current: SpanPrediction | None = None
 
         for prediction in predictions:
@@ -105,7 +123,7 @@ class BIOCombiner:
                         current.start_index:
                         current.end_index
                     ]
-                    entities.append(current)
+                    items.append(current)
                     current = None
                 continue
 
@@ -117,7 +135,7 @@ class BIOCombiner:
                         current.start_index:
                         current.end_index
                     ]
-                    entities.append(current)
+                    items.append(current)
 
                 current = SpanPrediction(
                     prediction_id=prediction.prediction_id,
@@ -160,7 +178,7 @@ class BIOCombiner:
                         current.start_index:
                         current.end_index
                     ]
-                    entities.append(current)
+                    items.append(current)
                     current = SpanPrediction(
                         prediction_id=prediction.prediction_id,
                         label=entity_label,
@@ -200,7 +218,7 @@ class BIOCombiner:
                 current.end_index
             ]
 
-            entities.append(current)
+            items.append(current)
 
 
-        return entities
+        return items
