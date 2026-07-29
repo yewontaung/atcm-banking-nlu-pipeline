@@ -73,16 +73,8 @@ for epoch in range(int(env.EPOCHS)):
     print(f"Epoch {epoch + 1}: {loss}")
 
 save_checkpoint(
-    path=f"{env.CHECKPOINT_PATH}/{load_modelname()}",
+    path=f"{env.SAVED_MODEL_PATH}/{load_modelname()}",
     model=model,
-    optimizer=optimizer,
-    metadata={
-        "intent_encoder":
-            intent_encoder.label_to_id,
-
-        "entity_encoder":
-            entity_encoder.label_to_id
-    }
 )
 
 print("****** Training Done *******")

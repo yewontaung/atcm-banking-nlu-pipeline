@@ -24,7 +24,7 @@ def create_predictor() -> Predictor:
         entity_count=entity_encoder.no_of_labels
     )
 
-    checkpoint_path = f"{env.CHECKPOINT_PATH}/{load_modelname()}"
+    checkpoint_path = f"{env.SAVED_MODEL_PATH}/{load_modelname()}"
 
     model = load_checkpoint(model, checkpoint_path, DEVICE)
 
@@ -33,9 +33,10 @@ def create_predictor() -> Predictor:
     mapper = Model02PredictionMapper(
         intent_encoder, entity_encoder
     )
+    builder = PredictionBuilder()
 
     return Predictor(
-        model, tokenizer, mapper, DEVICE
+        model, tokenizer, mapper, DEVICE, builder
     )
 
 def parse_args():
@@ -60,28 +61,9 @@ def parse_args():
 def main():
     args = parse_args()
     predictor = create_predictor()
-    result = predictor.predict(
+    prediction = predictor.predict(
         args.message
     )
-    builder = PredictionBuilder()
-
-    print(
-        f"\nTEXT : {result['text']}"
-    )
-    print(
-        "\n===== Intents ====="
-    )
-    for intent in result["intents"]:
-        print(intent)
-    print(
-        "\n===== Entities ====="
-    )
-    for entity in result["entities"]:
-        print(entity)
-
-    intents = result["intents"]
-    entities = result["entities"]
-    prediction = builder.build(args.message, intents, entities)
     print("========= Prediction =========")
     print(prediction.model_dump_json())
 

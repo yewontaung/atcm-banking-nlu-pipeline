@@ -184,7 +184,7 @@ for epoch in range(
 # ======================
 
 save_checkpoint(
-    path=f"{env.CHECKPOINT_PATH}/{load_modelname()}",
+    path=f"{env.SAVED_MODEL_PATH}/{load_modelname()}",
     model=model,
     optimizer=optimizer,
     metadata={

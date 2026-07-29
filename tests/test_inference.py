@@ -36,7 +36,7 @@ class NLUInference:
             entity_count=self.entity_encoder.no_of_labels
         )
         checkpoint_path = (
-            f"{env.CHECKPOINT_PATH}/{load_modelname()}"
+            f"{env.SAVED_MODEL_PATH}/{load_modelname()}"
         )
         checkpoint = torch.load(
             checkpoint_path,

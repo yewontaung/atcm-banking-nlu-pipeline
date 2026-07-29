@@ -1,5 +1,8 @@
 import torch
 
+from dataprocessors.postprocessors.prediction_builder import PredictionBuilder
+from utils.schemas import ModelPrediction
+
 
 class Predictor:
 
@@ -8,15 +11,17 @@ class Predictor:
         model,
         tokenizer,
         mapper,
-        device
+        device,
+        builder:PredictionBuilder
     ):
         self.model = model
         self.tokenizer = tokenizer
         self.mapper = mapper
         self.device = device
+        self.builder = builder
 
 
-    def predict(self, text:str):
+    def predict(self, text:str) -> ModelPrediction:
 
         encoded = self.tokenizer(
             text,
@@ -46,8 +51,14 @@ class Predictor:
             )
 
 
-        return self.mapper.map(
+        result = self.mapper.map(
             text=text,
             outputs=outputs,
             offset_mapping=encoded["offset_mapping"][0]
+        )
+
+        return self.builder.build(
+            text=result["text"],
+            intents=result["intents"],
+            entities=result["entities"]
         )
