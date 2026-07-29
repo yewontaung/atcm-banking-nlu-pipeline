@@ -39,9 +39,20 @@ def load_predictor():
     )
 
 def main():
-    while True:
+    load_predictor()
+    loop = True
+    if predictor is None:
+        loop = False
+    while loop:
         prompt = input("Enter prompt : ")
         if prompt.lower() == "exit" or prompt.lower() == 0:
             break
         prediction = predictor.predict(prompt)
+        print("======== Model Result =========")
         print(prediction.model_dump_json(indent=2))
+        print("======== ************ =========")
+
+    print("===== GOOD BYE =====")
+
+if __name__ == "__main__";
+    main()
