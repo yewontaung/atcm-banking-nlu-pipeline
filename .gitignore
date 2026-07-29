@@ -1,5 +1,6 @@
 # Models
 checkpoints/
+_saved/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
