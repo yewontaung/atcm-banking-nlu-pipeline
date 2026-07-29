@@ -1,3 +1,5 @@
+from transformers import AutoTokenizer
+
 from dataprocessors.encoders.bio import LabelBIOEncoder
 from dataprocessors.tokenizers import Model02TokenizationProcessor, TextTokenizer
 from inference.mappers.model_02 import Model02PredictionMapper
@@ -10,7 +12,6 @@ PROMPT = "09450001122 ထဲကို ၃၀၀၀ ဖုန်းကတ်ဖ�
 
 def output():
     import torch
-    from transformers import AutoTokenizer
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
     intent_encoder = LabelBIOEncoder.from_file(env.INTENT_META_FILE)
@@ -42,7 +43,7 @@ def output():
     print(entities)
 
 def tokenized_output():
-    tokenizer = TextTokenizer("xlm-roberta-base")
+    tokenizer = TextTokenizer(AutoTokenizer.from_pretrained("xlm-roberta-base"))
     intent_encoder = LabelBIOEncoder.from_file(env.INTENT_META_FILE)
     entity_encoder = LabelBIOEncoder.from_file(env.ENTITY_META_FILE)
     tokenization_processor = Model02TokenizationProcessor(

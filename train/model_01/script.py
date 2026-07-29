@@ -1,6 +1,7 @@
 import torch
 from torch.optim import AdamW
 from torch.utils.data import DataLoader
+from transformers import AutoTokenizer
 
 
 from dataprocessors.encoders.classification import (
@@ -87,7 +88,7 @@ processed = processor.process_file(
 
 
 tokenizer = TextTokenizer(
-    "xlm-roberta-base"
+    AutoTokenizer.from_pretrained("xlm-roberta-base")
 )
 
 

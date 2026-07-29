@@ -2,6 +2,7 @@ import torch
 
 from torch.optim import AdamW
 from torch.utils.data import DataLoader
+from transformers import AutoTokenizer
 from dataloader.collator import NLUCollator
 from dataloader.dataset import NLUDataset
 from dataprocessors.encoders.bio import LabelBIOEncoder
@@ -24,7 +25,7 @@ processor = DataPreProcessor()
 
 processed = processor.process_file(f"{env.TRAINING_FILE}")
 
-tokenizer = TextTokenizer("xlm-roberta-base")
+tokenizer = TextTokenizer(AutoTokenizer.from_pretrained("xlm-roberta-base"))
 
 tokenization_processor = Model02TokenizationProcessor(
     tokenizer=tokenizer,

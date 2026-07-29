@@ -11,8 +11,8 @@ R = TypeVar("R", bound=TokenizedDataset)
 
 class TextTokenizer:
 
-    def __init__(self, model_name:str):
-        self.tokenizer:SentencePieceBackend = AutoTokenizer.from_pretrained(model_name)
+    def __init__(self, tokenizer):
+        self.tokenizer:SentencePieceBackend = tokenizer
 
     def tokenize(self, text:str):
         return self.tokenizer(
