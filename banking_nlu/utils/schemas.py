@@ -162,3 +162,25 @@ class PredictedIntent(BaseModel):
 class ModelPrediction(BaseModel):
     text:str
     intents:list[PredictedIntent]
+
+# ==========================================================
+# Evaluation schemas
+# ==========================================================
+class TruthResult(BaseModel):
+    grounded_truth:list[list[str]]
+    predicted_truth:list[list[str]]
+
+class EvaluationData(BaseModel):
+    intent_truth:TruthResult
+    entity_truth:TruthResult
+
+class EvaluationResult(BaseModel):
+    report:dict
+    accuracy:float
+    precision:float
+    recall:float
+    f1:float
+
+class Model02EvaluationResult(BaseModel):
+    intent_evaluation:EvaluationResult
+    entity_evaluation:EvaluationResult

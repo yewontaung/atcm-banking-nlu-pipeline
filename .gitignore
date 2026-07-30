@@ -1,7 +1,8 @@
 # Models
 checkpoints/
 _saved/
-
+_evaluations/
+_datasets/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
