@@ -3,9 +3,9 @@ from typing import Generic, TypeVar
 
 from transformers import AutoTokenizer, SentencePieceBackend
 
-from dataprocessors.encoders.bio import LabelBIOEncoder
-from dataprocessors.encoders.classification import IntentClassificationEncoder
-from utils.schemas import EntitySpan, ProcessedDataset, Span, TokenizedDataset, TransformerTokenizedDataset, SpanIntentTokenizedDataset
+from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.encoders.classification import IntentClassificationEncoder
+from banking_nlu.utils.schemas import EntitySpan, ProcessedDataset, Span, TokenizedDataset, TransformerTokenizedDataset, SpanIntentTokenizedDataset
 
 R = TypeVar("R", bound=TokenizedDataset)
 

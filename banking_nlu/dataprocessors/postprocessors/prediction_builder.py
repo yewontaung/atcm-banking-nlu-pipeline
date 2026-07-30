@@ -1,4 +1,4 @@
-from utils.schemas import ModelPrediction, PredictedEntity, PredictedIntent, SpanPrediction
+from banking_nlu.utils.schemas import ModelPrediction, PredictedEntity, PredictedIntent, SpanPrediction
 
 
 class PredictionBuilder:

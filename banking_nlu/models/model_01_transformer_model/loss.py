@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-from utils.schemas import TransformerModelOutput
+from banking_nlu.utils.schemas import TransformerModelOutput
 
 class TransformerNLULoss:
 

@@ -1,7 +1,7 @@
 import json
 
-from dataprocessors.validators import DataValidator
-from utils.schemas import EntitySpan, ExportedDataset, IntentSpan, ProcessedDataset
+from banking_nlu.dataprocessors.validators import DataValidator
+from banking_nlu.utils.schemas import EntitySpan, ExportedDataset, IntentSpan, ProcessedDataset
 
 
 class DataPreProcessor:

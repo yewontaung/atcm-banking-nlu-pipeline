@@ -2,7 +2,7 @@ from torch import Tensor
 import torch.nn as nn
 from transformers import AutoModel
 
-from utils.schemas import TransformerModelOutput
+from banking_nlu.utils.schemas import TransformerModelOutput
 
 class BankingNLUTransformerModel(nn.Module):
 

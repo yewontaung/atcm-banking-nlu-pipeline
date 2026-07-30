@@ -4,52 +4,52 @@ from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 
 
-from dataprocessors.encoders.classification import (
+from banking_nlu.dataprocessors.encoders.classification import (
     IntentClassificationEncoder
 )
 
-from dataprocessors.encoders.bio import (
+from banking_nlu.dataprocessors.encoders.bio import (
     LabelBIOEncoder
 )
 
 
-from dataprocessors.preprocessors import (
+from banking_nlu.dataprocessors.preprocessors import (
     DataPreProcessor
 )
 
 
-from dataprocessors.tokenizers import (
+from banking_nlu.dataprocessors.tokenizers import (
     TextTokenizer,
     TransformerModelTokenizationProcessor
 )
 
 
-from dataloader.dataset import (
+from banking_nlu.dataloader.dataset import (
     NLUDataset
 )
 
 
-from dataloader.collator import (
+from banking_nlu.dataloader.collator import (
     NLUCollator
 )
 
 
-from models.model_01_transformer_model.model import (
+from banking_nlu.models.model_01_transformer_model.model import (
     BankingNLUTransformerModel
 )
 
 
-from models.model_01_transformer_model.loss import (
+from banking_nlu.models.model_01_transformer_model.loss import (
     TransformerNLULoss
 )
 
 
 from train.trainer import NLUModelTrainer
 
-from utils import env
+from banking_nlu.utils import env
 
-from utils.checkpoint import save_checkpoint
-from utils.loader import load_modelname
+from banking_nlu.utils.checkpoint import save_checkpoint
+from banking_nlu.utils.loader import load_modelname
 
 
 

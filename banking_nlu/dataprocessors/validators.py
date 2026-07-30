@@ -1,4 +1,4 @@
-from utils.schemas import ExportedDataset
+from banking_nlu.utils.schemas import ExportedDataset
 
 
 class DataValidator:

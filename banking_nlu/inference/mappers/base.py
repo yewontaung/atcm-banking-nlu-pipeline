@@ -3,7 +3,7 @@ from typing import TypeVar
 
 from torch import Tensor
 
-from utils.schemas import ModelOutput
+from banking_nlu.utils.schemas import ModelOutput
 
 T = TypeVar("T", bound=ModelOutput)
 

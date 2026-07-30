@@ -1,7 +1,7 @@
 import torch
 
-from dataprocessors.postprocessors.prediction_builder import PredictionBuilder
-from utils.schemas import ModelPrediction
+from banking_nlu.dataprocessors.postprocessors.prediction_builder import PredictionBuilder
+from banking_nlu.utils.schemas import ModelPrediction
 
 
 class Predictor:

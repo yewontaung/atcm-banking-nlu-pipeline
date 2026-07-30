@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 
-from utils.schemas import TransformerTokenizedDataset, SpanIntentTokenizedDataset
+from banking_nlu.utils.schemas import TransformerTokenizedDataset, SpanIntentTokenizedDataset
 
 class NLUDataset(Dataset):
 

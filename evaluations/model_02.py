@@ -1,13 +1,14 @@
 import torch
 
-from dataprocessors.encoders.bio import LabelBIOEncoder
-from dataprocessors.preprocessors import DataPreProcessor
-from dataprocessors.tokenizers import Model02TokenizationProcessor, TextTokenizer
-from inference.mappers.model_02 import Model02PredictionMapper
-from models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
-from utils import env
-from utils.loader import load_modelname, load_saved_model
-from utils.schemas import Model02LogitOutput
+from seqeval.metrics import accuracy_score, classification_report
+from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.preprocessors import DataPreProcessor
+from banking_nlu.dataprocessors.tokenizers import Model02TokenizationProcessor, TextTokenizer
+from banking_nlu.inference.mappers.model_02 import Model02PredictionMapper
+from banking_nlu.models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
+from banking_nlu.utils import env
+from banking_nlu.utils.loader import load_modelname, load_saved_model
+from banking_nlu.utils.schemas import Model02LogitOutput
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -70,6 +71,13 @@ def evaluate():
     print("++++++ Entity ++++++")
     print(pred_entities)
     print("==== xxxx ====")
+
+    intent_report = classification_report(true_intents, pred_intents)
+    print("===== Intent Report =====")
+    print(intent_report)
+    intent_accuracy = accuracy_score(true_intents, pred_intents)
+    print("======= Intent Accuracy ========")
+    print(intent_accuracy)
 
 if __name__ == "__main__":
     evaluate()

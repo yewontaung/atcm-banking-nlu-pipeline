@@ -1,7 +1,7 @@
 from torch import Tensor
 import torch.nn as nn
 
-from utils.schemas import Model02LogitOutput
+from banking_nlu.utils.schemas import Model02LogitOutput
 
 
 class Model02TokenIntentEntityLoss(nn.Module):

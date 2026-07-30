@@ -1,10 +1,10 @@
-from utils.schemas import SpanPrediction, TokenPrediction
+from banking_nlu.utils.schemas import SpanPrediction, TokenPrediction
 
 
 import torch
 
-from dataprocessors.encoders.bio import LabelBIOEncoder
-from utils.schemas import TokenPrediction
+from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.utils.schemas import TokenPrediction
 
 
 

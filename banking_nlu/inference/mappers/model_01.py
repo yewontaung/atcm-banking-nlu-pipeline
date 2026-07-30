@@ -1,10 +1,10 @@
-from inference.mappers.base import BasePredictionMapper
+from banking_nlu.inference.mappers.base import BasePredictionMapper
 
-from dataprocessors.postprocessors.logit_mappers.classification import (
+from banking_nlu.dataprocessors.postprocessors.logit_mappers.classification import (
     ClassificationLogitMapper
 )
 
-from dataprocessors.postprocessors.logit_mappers.bio import (
+from banking_nlu.dataprocessors.postprocessors.logit_mappers.bio import (
     BIOCombiner
 )
 

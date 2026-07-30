@@ -1,6 +1,6 @@
 import torch
 
-from utils import env
+from banking_nlu.utils import env
 
 
 def load_modelname():

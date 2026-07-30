@@ -1,8 +1,8 @@
 import torch
 
-from dataprocessors.encoders.bio import LabelBIOEncoder
-from dataprocessors.encoders.classification import IntentClassificationEncoder
-from utils.schemas import TokenPrediction, ClassifiedIntentPrediction
+from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.encoders.classification import IntentClassificationEncoder
+from banking_nlu.utils.schemas import TokenPrediction, ClassifiedIntentPrediction
 
 
 class ClassificationLogitMapper:

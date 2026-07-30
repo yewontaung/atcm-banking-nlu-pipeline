@@ -1,13 +1,13 @@
 from torch import Tensor
 
-from dataprocessors.encoders.bio import LabelBIOEncoder
-from inference.mappers.base import BasePredictionMapper
+from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.inference.mappers.base import BasePredictionMapper
 
-from dataprocessors.postprocessors.logit_mappers.bio import (
+from banking_nlu.dataprocessors.postprocessors.logit_mappers.bio import (
     BIOCombiner,
     BIOLogitMapper,
 )
-from utils.schemas import Model02LogitOutput
+from banking_nlu.utils.schemas import Model02LogitOutput
 
 
 class Model02PredictionMapper(BasePredictionMapper):

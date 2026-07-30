@@ -3,17 +3,17 @@ import torch
 
 from transformers import AutoTokenizer, PreTrainedTokenizerBase
 
-from models.model_01_transformer_model.model import BankingNLUTransformerModel
+from banking_nlu.models.model_01_transformer_model.model import BankingNLUTransformerModel
 
-from dataprocessors.encoders.classification import IntentClassificationEncoder
-from dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.encoders.classification import IntentClassificationEncoder
+from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
 
-from dataprocessors.postprocessors.logit_mappers.classification import ClassificationLogitMapper
-from dataprocessors.postprocessors.logit_mappers.bio import BIOCombiner
+from banking_nlu.dataprocessors.postprocessors.logit_mappers.classification import ClassificationLogitMapper
+from banking_nlu.dataprocessors.postprocessors.logit_mappers.bio import BIOCombiner
 
-from utils import env
-from utils.loader import load_modelname
-from utils.schemas import TransformerModelOutput
+from banking_nlu.utils import env
+from banking_nlu.utils.loader import load_modelname
+from banking_nlu.utils.schemas import TransformerModelOutput
 
 
 class NLUInference:

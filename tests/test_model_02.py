@@ -3,13 +3,13 @@ import argparse
 import torch
 from transformers import AutoTokenizer
 
-from dataprocessors.encoders.bio import LabelBIOEncoder
-from dataprocessors.postprocessors.prediction_builder import PredictionBuilder
-from inference.mappers.model_02 import Model02PredictionMapper
-from inference.predictor import Predictor
-from models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
-from utils import env
-from utils.loader import load_saved_model, load_modelname
+from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.postprocessors.prediction_builder import PredictionBuilder
+from banking_nlu.inference.mappers.model_02 import Model02PredictionMapper
+from banking_nlu.inference.predictor import Predictor
+from banking_nlu.models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
+from banking_nlu.utils import env
+from banking_nlu.utils.loader import load_saved_model, load_modelname
 
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
