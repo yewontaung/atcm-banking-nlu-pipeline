@@ -61,7 +61,7 @@ class Model02Evaluator:
             entity_evaluation=entity_evaluation
         )
 
-    def calculate_evaluation_result(grounded_truth, pred_truth) -> EvaluationResult:
+    def calculate_evaluation_result(self, grounded_truth, pred_truth) -> EvaluationResult:
         return EvaluationResult(
             report=classification_report(grounded_truth, pred_truth, output_dict=True),
             accuracy=accuracy_score(grounded_truth, pred_truth),

@@ -19,13 +19,13 @@ tokenization_processor = Model02TokenizationProcessor(
     intent_encoder=evaluator.intent_encoder,
     entity_encoder=evaluator.entity_encoder
 )
-tokenized = [tokenization_processor(item) for item in processed]
+tokenized = [tokenization_processor.process(item) for item in processed]
 
 def evaluate():
     result = evaluator.get_evaluation_data(tokenized)
-    evaluation = evaluator.calculate_evaluation_result(result)
+    evaluation = evaluator.calculate_matrices(result)
 
-    print(evaluation.model_dump_json(indent=2))
+    print(evaluation.report)
 
 if __name__ == "__main__":
     evaluate()
