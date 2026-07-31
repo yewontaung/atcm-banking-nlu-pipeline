@@ -25,7 +25,11 @@ def evaluate():
     result = evaluator.get_evaluation_data(tokenized)
     evaluation = evaluator.calculate_matrices(result)
 
-    print(evaluation.report)
+    intent_result = evaluation.intent_evaluation.model_dump_json(indent=2)
+    entity_result = evaluation.entity_evaluation.model_dump_json(indent=2)
+
+    with open(env.EVALUATION_FILE, "w", encoding="utf-8") as f:
+        f.write(evaluation.model_dump_json(indent=2))
 
 if __name__ == "__main__":
     evaluate()

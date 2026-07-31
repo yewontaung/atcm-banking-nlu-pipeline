@@ -1,6 +1,7 @@
 import torch
 
 from seqeval.metrics import accuracy_score, classification_report, precision_score, recall_score, f1_score
+from banking_nlu.evaluations.matrices import make_json_serializable
 from banking_nlu.utils.schemas import EvaluationData, EvaluationResult, Model02EvaluationResult, Model02LogitOutput, SpanIntentTokenizedDataset, TruthResult
 
 
@@ -63,7 +64,7 @@ class Model02Evaluator:
 
     def calculate_evaluation_result(self, grounded_truth, pred_truth) -> EvaluationResult:
         return EvaluationResult(
-            report=classification_report(grounded_truth, pred_truth, output_dict=True),
+            report=make_json_serializable(classification_report(grounded_truth, pred_truth, output_dict=True)),
             accuracy=accuracy_score(grounded_truth, pred_truth),
             precision=precision_score(grounded_truth, pred_truth),
             recall=recall_score(grounded_truth, pred_truth),

@@ -23,3 +23,22 @@ def calculate_evaluation_result(grounded_truth, pred_truth) -> EvaluationResult:
         recall=recall_score(grounded_truth, pred_truth),
         f1=f1_score(grounded_truth, pred_truth)
     )
+
+def make_json_serializable(obj):
+
+    if isinstance(obj, dict):
+        return {
+            key: make_json_serializable(value)
+            for key, value in obj.items()
+        }
+
+    if isinstance(obj, list):
+        return [
+            make_json_serializable(item)
+            for item in obj
+        ]
+
+    if hasattr(obj, "item"):
+        return obj.item()
+
+    return obj
