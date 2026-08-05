@@ -3,10 +3,10 @@ import argparse
 import torch
 from transformers import AutoTokenizer
 
-from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
 from banking_nlu.dataprocessors.postprocessors.prediction_builder import PredictionBuilder
 from banking_nlu.inference.mappers.model_02 import Model02PredictionMapper
-from banking_nlu.inference.predictor import Predictor
+from banking_nlu.inference.predictor import BankingNLUPredictor
 from banking_nlu.models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
 from banking_nlu.utils import env
 from banking_nlu.utils.loader import load_saved_model
@@ -14,9 +14,9 @@ from banking_nlu.utils.loader import load_saved_model
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-def create_predictor() -> Predictor:
-    intent_encoder = LabelBIOEncoder.from_file("./metadata/intents.json")
-    entity_encoder = LabelBIOEncoder.from_file("./metadata/entities.json")
+def create_predictor() -> BankingNLUPredictor:
+    intent_encoder = BIOLabelEncoder.from_file("./metadata/intents.json")
+    entity_encoder = BIOLabelEncoder.from_file("./metadata/entities.json")
 
     model = Model02BankingNLUTransformerModel(
         model_name="xlm-roberta-base",
@@ -35,7 +35,7 @@ def create_predictor() -> Predictor:
     )
     builder = PredictionBuilder()
 
-    return Predictor(
+    return BankingNLUPredictor(
         model, tokenizer, mapper, DEVICE, builder
     )
 

@@ -1,6 +1,6 @@
 from torch import Tensor
 
-from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
 from banking_nlu.inference.mappers.base import BasePredictionMapper
 
 from banking_nlu.dataprocessors.postprocessors.logit_mappers.bio import (
@@ -14,8 +14,8 @@ class Model02PredictionMapper(BasePredictionMapper):
 
     def __init__(
         self,
-        intent_encoder:LabelBIOEncoder,
-        entity_encoder:LabelBIOEncoder,
+        intent_encoder:BIOLabelEncoder,
+        entity_encoder:BIOLabelEncoder,
     ):
 
         self.intent_mapper = BIOLogitMapper(intent_encoder)

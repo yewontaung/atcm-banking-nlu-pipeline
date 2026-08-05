@@ -1,6 +1,6 @@
 from transformers import AutoTokenizer
 
-from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
 from banking_nlu.dataprocessors.tokenizers import Model02TokenizationProcessor, TextTokenizer
 from banking_nlu.inference.mappers.model_02 import Model02PredictionMapper
 from banking_nlu.models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
@@ -14,8 +14,8 @@ def output():
     import torch
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-    intent_encoder = LabelBIOEncoder.from_file(env.INTENT_META_FILE)
-    entity_encoder = LabelBIOEncoder.from_file(env.ENTITY_META_FILE)
+    intent_encoder = BIOLabelEncoder.from_file(env.INTENT_META_FILE)
+    entity_encoder = BIOLabelEncoder.from_file(env.ENTITY_META_FILE)
     tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
     mapper = Model02PredictionMapper(intent_encoder, entity_encoder)
     model = Model02BankingNLUTransformerModel(
@@ -44,8 +44,8 @@ def output():
 
 def tokenized_output():
     tokenizer = TextTokenizer(AutoTokenizer.from_pretrained("xlm-roberta-base"))
-    intent_encoder = LabelBIOEncoder.from_file(env.INTENT_META_FILE)
-    entity_encoder = LabelBIOEncoder.from_file(env.ENTITY_META_FILE)
+    intent_encoder = BIOLabelEncoder.from_file(env.INTENT_META_FILE)
+    entity_encoder = BIOLabelEncoder.from_file(env.ENTITY_META_FILE)
     tokenization_processor = Model02TokenizationProcessor(
         tokenizer=tokenizer,
         intent_encoder=intent_encoder,

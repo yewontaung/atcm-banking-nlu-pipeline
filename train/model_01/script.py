@@ -9,7 +9,7 @@ from banking_nlu.dataprocessors.encoders.classification import (
 )
 
 from banking_nlu.dataprocessors.encoders.bio import (
-    LabelBIOEncoder
+    BIOLabelEncoder
 )
 
 
@@ -68,7 +68,7 @@ intent_encoder = IntentClassificationEncoder.from_file(
     "./metadata/intents.json"
 )
 
-entity_encoder = LabelBIOEncoder.from_file(
+entity_encoder = BIOLabelEncoder.from_file(
     "./metadata/entities.json"
 )
 

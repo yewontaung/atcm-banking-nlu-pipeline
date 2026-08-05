@@ -1,6 +1,6 @@
 import torch
 
-from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
 from banking_nlu.dataprocessors.encoders.classification import IntentClassificationEncoder
 from banking_nlu.utils.schemas import TokenPrediction, ClassifiedIntentPrediction
 
@@ -10,7 +10,7 @@ class ClassificationLogitMapper:
     def __init__(
             self, 
             intent_encoder:IntentClassificationEncoder, 
-            entity_encoder:LabelBIOEncoder,
+            entity_encoder:BIOLabelEncoder,
             intent_threshold = 0.5):
 
         self.intent_encoder = intent_encoder

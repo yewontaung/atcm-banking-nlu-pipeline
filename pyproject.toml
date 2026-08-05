@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "banking_nlu"
+version = "0.1.0"
+description = "Banking NLU library for intent classification and entity extraction."
+readme = "GUIDE.md"
+requires-python = ">=3.11"
+
+authors = [
+    {name = "Ye Wont Aung"}
+]
+
+dependencies = [
+    "torch",
+    "transformers",
+    "pydantic",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["banking_nlu*"]

@@ -2,7 +2,7 @@ import json
 from typing import Final
 
 
-class LabelBIOEncoder:
+class BIOLabelEncoder:
 
     def __init__(self, items:list[str]):
         labels = ["O"]
@@ -32,8 +32,8 @@ class LabelBIOEncoder:
         ]
 
     @staticmethod
-    def from_file(path:str) -> "LabelBIOEncoder":
+    def from_file(path:str) -> "BIOLabelEncoder":
         with open(path, "r", encoding="utf-8") as file:
             data = json.load(file)
-        return LabelBIOEncoder(items=[item["label"] for item in data])
+        return BIOLabelEncoder(items=[item["label"] for item in data])
         

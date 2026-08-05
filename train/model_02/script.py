@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 from banking_nlu.dataloader.collator import NLUCollator
 from banking_nlu.dataloader.dataset import NLUDataset
-from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
 from banking_nlu.dataprocessors.preprocessors import DataPreProcessor
 from banking_nlu.dataprocessors.tokenizers import Model02TokenizationProcessor, TextTokenizer
 from banking_nlu.models.model_02_token_intent_transformer_model.loss import Model02TokenIntentEntityLoss
@@ -17,8 +17,8 @@ from banking_nlu.utils.checkpoint import save_model
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-intent_encoder = LabelBIOEncoder.from_file("./metadata/intents.json")
-entity_encoder = LabelBIOEncoder.from_file("./metadata/entities.json")
+intent_encoder = BIOLabelEncoder.from_file("./metadata/intents.json")
+entity_encoder = BIOLabelEncoder.from_file("./metadata/entities.json")
 
 processor = DataPreProcessor()
 

@@ -1,4 +1,4 @@
-from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
 from banking_nlu.evaluations.evaluators import Model02Evaluator
 from banking_nlu.inference.mappers.model_02 import Model02PredictionMapper
 from banking_nlu.models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
@@ -11,8 +11,8 @@ class Model02EvaluatorFactory:
     @staticmethod
     def from_default(device:str):
 
-        intent_encoder = LabelBIOEncoder.from_file(env.INTENT_META_FILE)
-        entity_encoder = LabelBIOEncoder.from_file(env.ENTITY_META_FILE)
+        intent_encoder = BIOLabelEncoder.from_file(env.INTENT_META_FILE)
+        entity_encoder = BIOLabelEncoder.from_file(env.ENTITY_META_FILE)
 
         from transformers import AutoTokenizer
         tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")

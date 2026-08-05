@@ -1,10 +1,14 @@
 import torch
 
+from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
 from banking_nlu.dataprocessors.postprocessors.prediction_builder import PredictionBuilder
+from banking_nlu.inference.mappers.model_02 import Model02PredictionMapper
+from banking_nlu.models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
+from banking_nlu.utils.loader import load_saved_model
 from banking_nlu.utils.schemas import ModelPrediction
 
 
-class Predictor:
+class BankingNLUPredictor:
 
     def __init__(
         self,
@@ -61,4 +65,40 @@ class Predictor:
             text=result["text"],
             intents=result["intents"],
             entities=result["entities"]
+        )
+
+    """
+    Model 02 is exposed for use. 
+    """
+    @staticmethod
+    def model_predictor(
+        model_name:str, 
+        saved_model_path:str, 
+        intent_metadata_path:str,
+        entity_metadata_path:str, 
+        device:str) -> "BankingNLUPredictor":
+
+        intent_encoder = BIOLabelEncoder.from_file(intent_metadata_path)
+        entity_encoder = BIOLabelEncoder.from_file(entity_metadata_path)
+
+        from transformers import AutoTokenizer
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        builder = PredictionBuilder()
+
+        model = Model02BankingNLUTransformerModel(
+            model_name=model_name,
+            intent_count=intent_encoder.no_of_labels,
+            entity_count=entity_encoder.no_of_labels,)
+
+        mapper =  Model02PredictionMapper(
+            intent_encoder=intent_encoder,
+            entity_encoder=entity_encoder
+        )
+        saved_model = load_saved_model(model, saved_model_path, device)
+        return BankingNLUPredictor(
+            model=saved_model,
+            tokenizer=tokenizer,
+            mapper=mapper,
+            builder=builder,
+            device=device,
         )

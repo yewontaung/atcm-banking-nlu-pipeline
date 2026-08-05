@@ -3,14 +3,14 @@ from banking_nlu.utils.schemas import SpanPrediction, TokenPrediction
 
 import torch
 
-from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
 from banking_nlu.utils.schemas import TokenPrediction
 
 
 
 class BIOLogitMapper:
 
-    def __init__(self, encoder: LabelBIOEncoder):
+    def __init__(self, encoder: BIOLabelEncoder):
         self.encoder = encoder
 
     def decode(self, logits:torch.Tensor, text:str, offset_mapping: torch.Tensor) -> list[str]:

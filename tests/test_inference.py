@@ -6,7 +6,7 @@ from transformers import AutoTokenizer, PreTrainedTokenizerBase
 from banking_nlu.models.model_01_transformer_model.model import BankingNLUTransformerModel
 
 from banking_nlu.dataprocessors.encoders.classification import IntentClassificationEncoder
-from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
 
 from banking_nlu.dataprocessors.postprocessors.logit_mappers.classification import ClassificationLogitMapper
 from banking_nlu.dataprocessors.postprocessors.logit_mappers.bio import BIOCombiner
@@ -25,7 +25,7 @@ class NLUInference:
         self.intent_encoder = IntentClassificationEncoder.from_file(
             "./metadata/intents.json"
         )
-        self.entity_encoder = LabelBIOEncoder.from_file(
+        self.entity_encoder = BIOLabelEncoder.from_file(
             "./metadata/entities.json"
         )
 

@@ -1,6 +1,6 @@
 import torch
 
-from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
 from banking_nlu.dataprocessors.preprocessors import DataPreProcessor
 from banking_nlu.dataprocessors.tokenizers import Model02TokenizationProcessor, TextTokenizer
 from banking_nlu.factory.model_02_utils import Model02EvaluatorFactory
@@ -8,8 +8,8 @@ from banking_nlu.utils import env
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-intent_encoder = LabelBIOEncoder.from_file(env.INTENT_META_FILE)
-entity_encoder = LabelBIOEncoder.from_file(env.ENTITY_META_FILE)
+intent_encoder = BIOLabelEncoder.from_file(env.INTENT_META_FILE)
+entity_encoder = BIOLabelEncoder.from_file(env.ENTITY_META_FILE)
 
 processor = DataPreProcessor()
 processed = processor.process_file(env.TESTING_FILE)

@@ -8,14 +8,14 @@ def load_predictor():
     import torch
     from transformers import AutoTokenizer
 
-    from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
-    from banking_nlu.inference.predictor import Predictor
+    from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
+    from banking_nlu.inference.predictor import BankingNLUPredictor
     from banking_nlu.models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
     from banking_nlu.utils import env
     from banking_nlu.utils.loader import load_saved_model
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-    intent_encoder = LabelBIOEncoder.from_file(env.INTENT_META_FILE)
-    entity_encoder = LabelBIOEncoder.from_file(env.ENTITY_META_FILE)
+    intent_encoder = BIOLabelEncoder.from_file(env.INTENT_META_FILE)
+    entity_encoder = BIOLabelEncoder.from_file(env.ENTITY_META_FILE)
     model = Model02BankingNLUTransformerModel(
         model_name="xlm-roberta-base",
         intent_count=intent_encoder.no_of_labels,
@@ -27,7 +27,7 @@ def load_predictor():
     builder = PredictionBuilder()
 
     saved_model = load_saved_model(model, f"{env.SAVED_MODEL_PATH}", DEVICE)
-    predictor = Predictor(
+    predictor = BankingNLUPredictor(
         model=saved_model,
         tokenizer=tokenizer,
         device=DEVICE,

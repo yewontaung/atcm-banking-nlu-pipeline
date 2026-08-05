@@ -3,7 +3,7 @@ from typing import Generic, TypeVar
 
 from transformers import AutoTokenizer, SentencePieceBackend
 
-from banking_nlu.dataprocessors.encoders.bio import LabelBIOEncoder
+from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
 from banking_nlu.dataprocessors.encoders.classification import IntentClassificationEncoder
 from banking_nlu.utils.schemas import EntitySpan, ProcessedDataset, Span, TokenizedDataset, TransformerTokenizedDataset, SpanIntentTokenizedDataset
 
@@ -29,7 +29,7 @@ class BaseTokenizationProcessor(ABC, Generic[R]):
 
 class BIOLabeler:
 
-    def __init__(self, encoder:LabelBIOEncoder):
+    def __init__(self, encoder:BIOLabelEncoder):
         self.encoder = encoder
 
     def create(self, items:list[Span], offsets:list[tuple[int, int]]) -> list[int]:
@@ -50,7 +50,7 @@ class BIOLabeler:
 
 class TransformerModelTokenizationProcessor(BaseTokenizationProcessor[TransformerTokenizedDataset]):
 
-    def __init__(self, tokenizer:TextTokenizer, intent_encoder:IntentClassificationEncoder, entity_encoder:LabelBIOEncoder):
+    def __init__(self, tokenizer:TextTokenizer, intent_encoder:IntentClassificationEncoder, entity_encoder:BIOLabelEncoder):
         self.tokenizer = tokenizer
         self.intent_encoder = intent_encoder
         self.entity_encoder = entity_encoder
@@ -84,7 +84,7 @@ class TransformerModelTokenizationProcessor(BaseTokenizationProcessor[Transforme
 
 class Model02TokenizationProcessor(BaseTokenizationProcessor[SpanIntentTokenizedDataset]):
 
-    def __init__(self, tokenizer:TextTokenizer, intent_encoder:LabelBIOEncoder, entity_encoder:LabelBIOEncoder):
+    def __init__(self, tokenizer:TextTokenizer, intent_encoder:BIOLabelEncoder, entity_encoder:BIOLabelEncoder):
         self.tokenizer = tokenizer
         self.intent_labeler = BIOLabeler(intent_encoder)
         self.entity_labeler = BIOLabeler(entity_encoder)
