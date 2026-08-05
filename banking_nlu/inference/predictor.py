@@ -76,7 +76,7 @@ class BankingNLUPredictor:
         saved_model_path:str, 
         intent_metadata_path:str,
         entity_metadata_path:str, 
-        device:str) -> "BankingNLUPredictor":
+        device:str = "cpu") -> "BankingNLUPredictor":
 
         intent_encoder = BIOLabelEncoder.from_file(intent_metadata_path)
         entity_encoder = BIOLabelEncoder.from_file(entity_metadata_path)
