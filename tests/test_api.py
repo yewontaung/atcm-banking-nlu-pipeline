@@ -43,7 +43,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 def main():
     # load_predictor()
     global predictor
-    predictor = BankingNLUPredictor.model_predictor(
+    predictor = BankingNLUPredictor.load(
         model_name="xlm-roberta-base",
         saved_model_path=env.SAVED_MODEL_PATH,
         intent_metadata_path=env.INTENT_META_FILE,

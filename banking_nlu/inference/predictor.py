@@ -71,7 +71,7 @@ class BankingNLUPredictor:
     Model 02 is exposed for use. 
     """
     @staticmethod
-    def model_predictor(
+    def load(
         model_name:str, 
         saved_model_path:str, 
         intent_metadata_path:str,
