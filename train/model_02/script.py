@@ -12,8 +12,7 @@ from banking_nlu.models.model_02_token_intent_transformer_model.loss import Mode
 from banking_nlu.models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
 from train.trainer import NLUModelTrainer
 from banking_nlu.utils import env
-from banking_nlu.utils.checkpoint import save_checkpoint
-from banking_nlu.utils.loader import load_modelname
+from banking_nlu.utils.checkpoint import save_model
 
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -73,8 +72,8 @@ for epoch in range(int(env.EPOCHS)):
 
     print(f"Epoch {epoch + 1}: {loss}")
 
-save_checkpoint(
-    path=f"{env.SAVED_MODEL_PATH}/{load_modelname()}",
+save_model(
+    path=f"{env.SAVED_MODEL_PATH}",
     model=model,
 )
 

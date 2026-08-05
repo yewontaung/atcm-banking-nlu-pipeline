@@ -12,7 +12,7 @@ def load_predictor():
     from banking_nlu.inference.predictor import Predictor
     from banking_nlu.models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
     from banking_nlu.utils import env
-    from banking_nlu.utils.loader import load_modelname, load_saved_model
+    from banking_nlu.utils.loader import load_saved_model
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
     intent_encoder = LabelBIOEncoder.from_file(env.INTENT_META_FILE)
     entity_encoder = LabelBIOEncoder.from_file(env.ENTITY_META_FILE)
@@ -26,7 +26,7 @@ def load_predictor():
     mapper = Model02PredictionMapper(intent_encoder, entity_encoder)
     builder = PredictionBuilder()
 
-    saved_model = load_saved_model(model, f"{env.SAVED_MODEL_PATH}/{load_modelname()}", DEVICE)
+    saved_model = load_saved_model(model, f"{env.SAVED_MODEL_PATH}", DEVICE)
     predictor = Predictor(
         model=saved_model,
         tokenizer=tokenizer,

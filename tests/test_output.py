@@ -5,7 +5,7 @@ from banking_nlu.dataprocessors.tokenizers import Model02TokenizationProcessor, 
 from banking_nlu.inference.mappers.model_02 import Model02PredictionMapper
 from banking_nlu.models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
 from banking_nlu.utils import env
-from banking_nlu.utils.loader import load_modelname, load_saved_model
+from banking_nlu.utils.loader import load_saved_model
 from banking_nlu.utils.schemas import EntitySpan, IntentSpan, Model02LogitOutput, ProcessedDataset
 
 PROMPT = "09450001122 ထဲကို ၃၀၀၀ ဖုန်းကတ်ဖြည့်ပေးပါဦး။"
@@ -25,7 +25,7 @@ def output():
     )
 
     tokenized = tokenizer(PROMPT, return_tensors="pt", return_offsets_mapping=True, truncation=True)
-    saved_model = load_saved_model(model, f"{env.SAVED_MODEL_PATH}/{load_modelname()}", DEVICE)
+    saved_model = load_saved_model(model, f"{env.SAVED_MODEL_PATH}", DEVICE)
     saved_model.eval()
 
     with torch.no_grad():

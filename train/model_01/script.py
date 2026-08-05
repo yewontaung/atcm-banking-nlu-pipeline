@@ -48,8 +48,7 @@ from train.trainer import NLUModelTrainer
 
 from banking_nlu.utils import env
 
-from banking_nlu.utils.checkpoint import save_checkpoint
-from banking_nlu.utils.loader import load_modelname
+from banking_nlu.utils.checkpoint import save_model
 
 
 
@@ -184,8 +183,8 @@ for epoch in range(
 # Save
 # ======================
 
-save_checkpoint(
-    path=f"{env.SAVED_MODEL_PATH}/{load_modelname()}",
+save_model(
+    path=f"{env.SAVED_MODEL_PATH}",
     model=model,
     optimizer=optimizer,
     metadata={

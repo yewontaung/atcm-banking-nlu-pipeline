@@ -7,7 +7,7 @@ from banking_nlu.inference.mappers.model_02 import Model02PredictionMapper
 from banking_nlu.inference.predictor import Predictor
 from banking_nlu.models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
 from banking_nlu.utils import env
-from banking_nlu.utils.loader import load_modelname, load_saved_model
+from banking_nlu.utils.loader import load_saved_model
 
 
 predictor:Predictor = None
@@ -29,7 +29,7 @@ def load_predictor():
     )
     builder = PredictionBuilder()
 
-    saved_model = load_saved_model(model, saved_model_path=f"{env.SAVED_MODEL_PATH}/{load_modelname()}", device=DEVICE)
+    saved_model = load_saved_model(model, saved_model_path=f"{env.SAVED_MODEL_PATH}", device=DEVICE)
     predictor = Predictor(
         model=saved_model,
         device=DEVICE,

@@ -9,7 +9,7 @@ from banking_nlu.inference.mappers.model_02 import Model02PredictionMapper
 from banking_nlu.inference.predictor import Predictor
 from banking_nlu.models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
 from banking_nlu.utils import env
-from banking_nlu.utils.loader import load_saved_model, load_modelname
+from banking_nlu.utils.loader import load_saved_model
 
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -24,7 +24,7 @@ def create_predictor() -> Predictor:
         entity_count=entity_encoder.no_of_labels
     )
 
-    checkpoint_path = f"{env.SAVED_MODEL_PATH}/{load_modelname()}"
+    checkpoint_path = f"{env.SAVED_MODEL_PATH}"
 
     model = load_saved_model(model, checkpoint_path, DEVICE)
 

@@ -3,7 +3,7 @@ from banking_nlu.evaluations.evaluators import Model02Evaluator
 from banking_nlu.inference.mappers.model_02 import Model02PredictionMapper
 from banking_nlu.models.model_02_token_intent_transformer_model.model import Model02BankingNLUTransformerModel
 from banking_nlu.utils import env
-from banking_nlu.utils.loader import load_modelname, load_saved_model
+from banking_nlu.utils.loader import load_saved_model
 
 
 class Model02EvaluatorFactory:
@@ -25,7 +25,7 @@ class Model02EvaluatorFactory:
             entity_count=entity_encoder.no_of_labels
         )
 
-        saved_model = load_saved_model(model, f"{env.SAVED_MODEL_PATH}/{load_modelname()}", device)
+        saved_model = load_saved_model(model, f"{env.SAVED_MODEL_PATH}", device)
 
         return Model02Evaluator(
             model=saved_model,

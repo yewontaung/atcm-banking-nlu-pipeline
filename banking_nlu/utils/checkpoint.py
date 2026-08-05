@@ -1,7 +1,7 @@
 import torch
 
 
-def save_checkpoint(
+def save_model(
     path,
     model,
 ):

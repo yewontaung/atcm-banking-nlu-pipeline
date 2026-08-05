@@ -12,7 +12,6 @@ from banking_nlu.dataprocessors.postprocessors.logit_mappers.classification impo
 from banking_nlu.dataprocessors.postprocessors.logit_mappers.bio import BIOCombiner
 
 from banking_nlu.utils import env
-from banking_nlu.utils.loader import load_modelname
 from banking_nlu.utils.schemas import TransformerModelOutput
 
 
@@ -36,7 +35,7 @@ class NLUInference:
             entity_count=self.entity_encoder.no_of_labels
         )
         checkpoint_path = (
-            f"{env.SAVED_MODEL_PATH}/{load_modelname()}"
+            f"{env.SAVED_MODEL_PATH}"
         )
         checkpoint = torch.load(
             checkpoint_path,
