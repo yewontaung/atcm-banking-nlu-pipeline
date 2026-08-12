@@ -4,24 +4,28 @@ from banking_nlu.utils import env
 
 processor = DataPreProcessor()
 
-error = []
 
 train = processor.load_file(env.TRAIN_JSON)
 val = processor.load_file(env.VALIDATE_JSON)
+
+train_error = []
 
 for item in train:
     try:
         processor.process_item(item)
     except Exception as e:
         print(e)
-        error.append(item)
+        train_error.append(item)
 
 print("Train error")
-print(item)
+print(train_error)
 
-print("Validation error")
+val_error = []
+
 for item in val:
     try:
         processor.process_item(item)
     except:
-        error.append(item)
+        val_error.append(item)
+print("Validation error")
+print(val_error)
