@@ -61,6 +61,6 @@
     },
     {
         "intent_id": 19,
-        "label": "report_card_lost"
+        "label": "report_lost_card"
     }
 ]
