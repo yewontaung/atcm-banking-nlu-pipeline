@@ -5,7 +5,7 @@ from banking_nlu.utils import env
 processor = DataPreProcessor()
 
 train = processor.process_file(env.TRAIN_JSON)
-val = processor.process_file(env.VALIDATION_SIZE)
+val = processor.process_file(env.VALIDATE_JSON)
 
 print(train)
 print(val)
