@@ -12,7 +12,8 @@ val = processor.load_file(env.VALIDATE_JSON)
 for item in train:
     try:
         processor.process_item(item)
-    except:
+    except Exception as e:
+        print(e)
         error.append(item)
 
 print("Train error")
