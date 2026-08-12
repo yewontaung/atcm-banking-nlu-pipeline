@@ -30,5 +30,37 @@
     {
         "intent_id": 8,
         "label": "out_of_scope"
+    },
+    {
+        "intent_id": 9,
+        "label": "view_balance"
+    },
+    {
+        "intent_id": 10,
+        "label": "receive_money"
+    },
+    {
+        "intent_id": 14,
+        "label": "change_pin"
+    },
+    {
+        "intent_id": 15,
+        "label": "view_profile"
+    },
+    {
+        "intent_id": 16,
+        "label": "view_exchange_rate"
+    },
+    {
+        "intent_id": 17,
+        "label": "buy_mobile_package"
+    },
+    {
+        "intent_id": 18,
+        "label": "buy_game_credits"
+    },
+    {
+        "intent_id": 19,
+        "label": "report_card_lost"
     }
 ]

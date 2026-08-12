@@ -22,5 +22,33 @@
     {
         "entity_id": 6,
         "label": "trx_type"
+    },
+    {
+        "entity_id": 7,
+        "label": "from_currency"
+    },
+    {
+        "entity_id": 8,
+        "label": "to_currency"
+    },
+    {
+        "entity_id": 9,
+        "label": "game_name"
+    },
+    {
+        "entity_id": 10,
+        "label": "package_type"
+    },
+    {
+        "entity_id": 11,
+        "label": "account_id"
+    },
+    {
+        "entity_id": 12,
+        "label": "card_type"
+    },
+    {
+        "entity_id": 13,
+        "label": "holder_name"
     }
 ]
