@@ -44,7 +44,7 @@ from banking_nlu.models.model_01_transformer_model.loss import (
 )
 
 
-from train.trainer import NLUModelTrainer
+from scripts.trainer import NLUModelTrainer
 
 from banking_nlu.utils import env
 

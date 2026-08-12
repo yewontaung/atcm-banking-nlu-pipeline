@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TRAINING_FILE = os.getenv("TRAINING_FILE")
+VALIDATION_SIZE=os.getenv("VALIDATION_SIZE")
 SAVED_MODEL_PATH = os.getenv("SAVED_MODEL_PATH")
 TEST_PROMPT = os.getenv("TEST_PROMPT")
 INTENT_THRESHOLD = os.getenv("INTENT_THRESHOLD")
@@ -18,3 +19,6 @@ TESTING_DATASIZE = os.getenv("TESTING_DATASIZE")
 TESTING_FILE = os.getenv("TESTING_FILE")
 
 EVALUATION_FILE = os.getenv("EVALUATION_FILE")
+
+TRAIN_JSON = os.getenv("TRAIN_JSON")
+VALIDATE_JSON = os.getenv("VALIDATE_JSON")
