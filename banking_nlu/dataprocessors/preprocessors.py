@@ -20,25 +20,31 @@ class DataPreProcessor:
         return [self.process_item(item) for item in dataset]
 
     def process_item(self, item:ExportedDataset) -> ProcessedDataset:
-        self.validator.validate(item)
-        processed_intents:list[IntentSpan] = []
-        for intent in item.intents:
-            entities = [
-                EntitySpan(
-                    label=entity.label,
-                    start_index=entity.start_index,
-                    end_index=entity.end_index
-                ) for entity in intent.entities
-            ]
+        try:
+            self.validator.validate(item)
+            processed_intents:list[IntentSpan] = []
+            for intent in item.intents:
+                entities = [
+                    EntitySpan(
+                        label=entity.label,
+                        start_index=entity.start_index,
+                        end_index=entity.end_index
+                    ) for entity in intent.entities
+                ]
 
-            processed_intents.append(IntentSpan(
-                label=intent.label,
-                start_index=intent.start_index,
-                end_index=intent.end_index,
-                entities=entities
-            ))
+                processed_intents.append(IntentSpan(
+                    label=intent.label,
+                    start_index=intent.start_index,
+                    end_index=intent.end_index,
+                    entities=entities
+                ))
 
-        return ProcessedDataset(
-            text=item.text,
-            intents=processed_intents
-        )
+            return ProcessedDataset(
+                text=item.text,
+                intents=processed_intents
+            )
+        except Exception as e:
+            print(f"Invalid dataset with dataset_id:{item.dataset_id}.")
+            print(f"Text: {item.text}")
+            print(f"{str(e)}")
+            raise
