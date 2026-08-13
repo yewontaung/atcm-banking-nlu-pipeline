@@ -41,8 +41,8 @@ class Model01Evaluator:
             offset_mapping = token["offset_mapping"][0]
             with torch.no_grad():
                 outputs:Model01LogitOutput = self.model(input_ids, attention_mask)
-                pred_intents.append(self.mapper.intent_mapper.decode(outputs.intent_logits, text=item.text, offset_mapping=offset_mapping))
-                pred_entities.append(self.mapper.entity_mapper.decode(outputs.entity_logits, text=item.text, offset_mapping=offset_mapping))
+                pred_intents.append(self.mapper.decode_intents(outputs.intent_logits, text=item.text, offset_mapping=offset_mapping))
+                pred_entities.append(self.mapper.decode_entities(outputs.entity_logits, text=item.text, offset_mapping=offset_mapping))
 
         return EvaluationData(
             intent_truth=TruthResult(grounded_truth=true_intents, predicted_truth=pred_intents),

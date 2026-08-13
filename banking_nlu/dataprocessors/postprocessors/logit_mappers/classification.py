@@ -66,3 +66,33 @@ class ClassificationLogitMapper:
             ))
 
         return enitites
+
+    def decode_intents(self, logits: torch.Tensor) -> list[str]:
+        probabilities = torch.sigmoid(logits[0])
+
+        predictions = []
+
+        for idx, prob in enumerate(probabilities):
+            if prob >= self.intent_threshold:
+                predictions.append(
+                    self.intent_encoder.id_to_label[idx]
+                )
+
+        return predictions
+
+    def decode_entities(
+        self,
+        logits: torch.Tensor,
+        offset_mapping: torch.Tensor
+    ) -> list[str]:
+
+        token_ids = torch.argmax(logits, dim=-1)[0]
+
+        predictions = []
+
+        for token_id in token_ids:
+            label_id = int(token_id)
+            label = self.entity_encoder.id_to_label[label_id]
+            predictions.append(label)
+
+        return predictions
