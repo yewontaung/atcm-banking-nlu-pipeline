@@ -48,7 +48,7 @@ class BIOLabeler:
         return self.encoder.encode(labels)
     
 
-class TransformerModelTokenizationProcessor(BaseTokenizationProcessor[TransformerTokenizedDataset]):
+class Model01TransformerModelTokenizationProcessor(BaseTokenizationProcessor[TransformerTokenizedDataset]):
 
     def __init__(self, tokenizer:TextTokenizer, intent_encoder:IntentClassificationEncoder, entity_encoder:BIOLabelEncoder):
         self.tokenizer = tokenizer

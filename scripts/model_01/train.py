@@ -20,7 +20,7 @@ from banking_nlu.dataprocessors.preprocessors import (
 
 from banking_nlu.dataprocessors.tokenizers import (
     TextTokenizer,
-    TransformerModelTokenizationProcessor
+    Model01TransformerModelTokenizationProcessor
 )
 
 
@@ -65,11 +65,11 @@ DEVICE = (
 # ======================
 
 intent_encoder = IntentClassificationEncoder.from_file(
-    "./metadata/intents.json"
+    env.INTENT_META_FILE
 )
 
 entity_encoder = BIOLabelEncoder.from_file(
-    "./metadata/entities.json"
+    env.ENTITY_META_FILE
 )
 
 
@@ -80,8 +80,12 @@ entity_encoder = BIOLabelEncoder.from_file(
 
 processor = DataPreProcessor()
 
-processed = processor.process_file(
-    env.TRAINING_FILE
+train_processed = processor.process_file(
+    env.TRAIN_JSON
+)
+
+validation_processed = processor.process_file(
+    env.VALIDATE_JSON
 )
 
 
@@ -92,7 +96,7 @@ tokenizer = TextTokenizer(
 
 
 tokenizer_processor = (
-    TransformerModelTokenizationProcessor(
+    Model01TransformerModelTokenizationProcessor(
         tokenizer,
         intent_encoder,
         entity_encoder
@@ -100,14 +104,19 @@ tokenizer_processor = (
 )
 
 
-tokenized = [
+train_tokenized = [
     tokenizer_processor.process(item)
-    for item in processed
+    for item in train_processed
+]
+
+validation_tokenized = [
+    tokenizer_processor.process(item)
+    for item in validation_processed
 ]
 
 
-dataset = NLUDataset(tokenized)
-
+train_dataset = NLUDataset(train_tokenized)
+validation_dataset = NLUDataset(validation_tokenized)
 
 
 collator = NLUCollator(
@@ -117,13 +126,19 @@ collator = NLUCollator(
 
 
 
-loader = DataLoader(
-    dataset,
+train_loader = DataLoader(
+    train_dataset,
     batch_size=8,
     shuffle=True,
     collate_fn=collator
 )
 
+validation_loader = DataLoader(
+    validation_dataset,
+    batch_size=8,
+    shuffle=False,
+    collate_fn=collator
+)
 
 
 # ======================
@@ -162,38 +177,50 @@ trainer = NLUModelTrainer(
     device=DEVICE
 )
 
+best_val_loss = float("inf")
+best_epoch = 0
 
+print()
+print(
+    f"| {'Epoch':^7} | "
+    f"{'Train Loss':^14} | "
+    f"{'Validation Loss':^17} |"
+)
+
+print("-" * 47)
 
 for epoch in range(
     int(env.EPOCHS)
 ):
 
-    loss = trainer.train_epoch(
-        loader
+    train_loss = trainer.train_epoch(
+        train_loader
     )
-
+    val_loss = trainer.validate_epoch(
+        validation_loader
+    )
 
     print(
-        f"Epoch {epoch+1}: {loss}"
-    )
+            f"| {epoch + 1:^7} | "
+            f"{train_loss:^14.4f} | "
+            f"{val_loss:^17.4f} |"
+        )
 
 
-
-# ======================
-# Save
-# ======================
-
-save_model(
-    path=f"{env.SAVED_MODEL_PATH}",
-    model=model,
-    optimizer=optimizer,
-    metadata={
-        "intent_encoder":
-            intent_encoder.label_to_id,
-
-        "entity_encoder":
-            entity_encoder.label_to_id
-    }
-)
-
-print("Training Done.")
+    if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            best_epoch = epoch + 1
+    
+            save_model(
+                path=f"{env.SAVED_MODEL_PATH}",
+                model=model,
+            )
+            print(
+                f"  ✓ New best model saved "
+                f"(epoch={best_epoch}, "
+                f"val_loss={best_val_loss:.4f})"
+            )
+print()
+print("****** Training Done ******")
+print(f"Best Epoch: {best_epoch}")
+print(f"Best Validation Loss: {best_val_loss:.4f}")
