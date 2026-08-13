@@ -51,8 +51,9 @@ class Model01Evaluator:
 
     def calculate_matrices(self, evaluation_data:EvaluationData) -> Model02EvaluationResult:
 
-        intent_truth = evaluation_data.intent_truth
-        intent_evaluation = self.calculate_evaluation_result(intent_truth.grounded_truth, intent_truth.predicted_truth)
+        true_intent = self.intent_encoder.decode(evaluation_data.intent_truth.grounded_truth)
+        pred_intent = self.intent_encoder.decode(evaluation_data.intent_truth.predicted_truth)
+        intent_evaluation = self.calculate_evaluation_result(true_intent, pred_intent)
 
         entity_truth = evaluation_data.entity_truth
         entity_evaluation = self.calculate_evaluation_result(entity_truth.grounded_truth, entity_truth.predicted_truth)
@@ -69,4 +70,4 @@ class Model01Evaluator:
             precision=precision_score(grounded_truth, pred_truth),
             recall=recall_score(grounded_truth, pred_truth),
             f1=f1_score(grounded_truth, pred_truth)
-        )    
+        )

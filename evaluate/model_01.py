@@ -6,6 +6,7 @@ from banking_nlu.dataprocessors.encoders.classification import IntentClassificat
 from banking_nlu.dataprocessors.postprocessors.logit_mappers.classification import ClassificationLogitMapper
 from banking_nlu.dataprocessors.preprocessors import DataPreProcessor
 from banking_nlu.dataprocessors.tokenizers import Model01TransformerModelTokenizationProcessor, TextTokenizer
+from banking_nlu.evaluations.matrices import calculate_evaluation_result
 from banking_nlu.evaluations.models.model_01_evaluator import Model01Evaluator
 from banking_nlu.models.model_01_transformer_model.model import Model01BankingNLUTransformerModel
 from banking_nlu.utils import env
@@ -56,8 +57,6 @@ def evaluate():
     evaluation_data = evaluator.get_evaluation_data(tokenized)
 
     print(evaluation_data.model_dump_json())
-
-    metrices = evaluator.calculate_matrices(evaluation_data)
 
 if __name__ == "__main__":
     evaluate()
