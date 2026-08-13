@@ -19,7 +19,7 @@ class Model01Inference:
         
         self.DEVICE = DEVICE
         self.intent_encoder = intent_encoder
-        self.entity_encoder = self.entity_encoder
+        self.entity_encoder = entity_encoder
         self.model = model
         self.tokenizer = tokenizer
         self.mapper = mapper
