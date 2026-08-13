@@ -1,6 +1,7 @@
 import torch
 
 import sklearn.metrics as sk
+from sklearn.preprocessing import MultiLabelBinarizer
 from seqeval.metrics import accuracy_score, classification_report, precision_score, recall_score, f1_score
 from banking_nlu.evaluations.matrices import make_json_serializable
 from banking_nlu.utils.schemas import EvaluationData, EvaluationResult, Model01LogitOutput, Model02EvaluationResult, TransformerTokenizedDataset, TruthResult
@@ -71,15 +72,6 @@ class Model01Evaluator:
             entity_evaluation=entity_evaluation
         )
 
-    def calculate_intent_evaluation(self, grounded_truth, pred_truth) -> EvaluationResult:
-        return EvaluationResult(
-            report=make_json_serializable(sk.classification_report(grounded_truth, pred_truth, output_dict=True)),
-            accuracy=sk.accuracy_score(grounded_truth, pred_truth),
-            precision=sk.precision_score(grounded_truth, pred_truth),
-            recall=sk.recall_score(grounded_truth, pred_truth),
-            f1=sk.f1_score(grounded_truth, pred_truth)
-        )
-
     def calculate_entity_evaluation_result(self, grounded_truth, pred_truth) -> EvaluationResult:
         return EvaluationResult(
             report=make_json_serializable(classification_report(grounded_truth, pred_truth, output_dict=True)),
@@ -88,3 +80,43 @@ class Model01Evaluator:
             recall=recall_score(grounded_truth, pred_truth),
             f1=f1_score(grounded_truth, pred_truth)
         )
+
+    def calculate_intent_evaluation(self, grounded_truth, pred_truth) -> EvaluationResult:
+        mlb = MultiLabelBinarizer()
+
+        # Fit on both sets so every possible intent is represented
+        mlb.fit(grounded_truth + pred_truth)
+
+        y_true = mlb.transform(grounded_truth)
+        y_pred = mlb.transform(pred_truth)
+
+        return EvaluationResult(
+            report=make_json_serializable(
+                sk.classification_report(
+                    y_true,
+                    y_pred,
+                    target_names=mlb.classes_,
+                    output_dict=True,
+                    zero_division=0
+                )
+            ),
+            accuracy=sk.accuracy_score(y_true, y_pred),
+            precision=sk.precision_score(
+                y_true,
+                y_pred,
+                average="samples",
+                zero_division=0
+            ),
+            recall=sk.recall_score(
+                y_true,
+                y_pred,
+                average="samples",
+                zero_division=0
+            ),
+            f1=sk.f1_score(
+                y_true,
+                y_pred,
+                average="samples",
+                zero_division=0
+            )
+        )    
