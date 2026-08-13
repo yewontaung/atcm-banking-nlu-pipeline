@@ -33,7 +33,8 @@ def main():
         DEVICE=DEVICE,
         mapper=Model01PredictionMapper(
             intent_encoder=intent_encoder,
-            entity_encoder=entity_encoder
+            entity_encoder=entity_encoder,
+            threshold=float(env.INTENT_THRESHOLD)
         ),
         tokenizer=tokenizer,
     )
