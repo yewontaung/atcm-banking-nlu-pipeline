@@ -115,7 +115,7 @@ class ModelOutput:
     }
 
 @dataclass
-class TransformerModelOutput(ModelOutput):
+class Model01LogitOutput(ModelOutput):
     intent_logits: Tensor
     entity_logits: Tensor
 

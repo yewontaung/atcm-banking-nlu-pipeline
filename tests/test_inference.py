@@ -3,7 +3,7 @@ import torch
 
 from transformers import AutoTokenizer, PreTrainedTokenizerBase
 
-from banking_nlu.models.model_01_transformer_model.model import BankingNLUTransformerModel
+from banking_nlu.models.model_01_transformer_model.model import Model01BankingNLUTransformerModel
 
 from banking_nlu.dataprocessors.encoders.classification import IntentClassificationEncoder
 from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
@@ -12,7 +12,7 @@ from banking_nlu.dataprocessors.postprocessors.logit_mappers.classification impo
 from banking_nlu.dataprocessors.postprocessors.logit_mappers.bio import BIOCombiner
 
 from banking_nlu.utils import env
-from banking_nlu.utils.schemas import TransformerModelOutput
+from banking_nlu.utils.schemas import Model01LogitOutput
 
 
 class NLUInference:
@@ -29,7 +29,7 @@ class NLUInference:
             "./metadata/entities.json"
         )
 
-        self.model = BankingNLUTransformerModel(
+        self.model = Model01BankingNLUTransformerModel(
             model_name="xlm-roberta-base",
             intent_count=self.intent_encoder.no_of_lables,
             entity_count=self.entity_encoder.no_of_labels
@@ -78,7 +78,7 @@ class NLUInference:
 
         with torch.no_grad():
 
-            output:TransformerModelOutput = self.model(
+            output:Model01LogitOutput = self.model(
                 input_ids=encoded["input_ids"].to(self.DEVICE),
                 attention_mask=encoded["attention_mask"].to(self.DEVICE)
             )

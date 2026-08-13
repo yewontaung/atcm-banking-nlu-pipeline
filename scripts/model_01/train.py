@@ -35,7 +35,7 @@ from banking_nlu.dataloader.collator import (
 
 
 from banking_nlu.models.model_01_transformer_model.model import (
-    BankingNLUTransformerModel
+    Model01BankingNLUTransformerModel
 )
 
 
@@ -145,7 +145,7 @@ validation_loader = DataLoader(
 # Model
 # ======================
 
-model = BankingNLUTransformerModel(
+model = Model01BankingNLUTransformerModel(
     model_name="xlm-roberta-base",
     intent_count=intent_encoder.no_of_lables,
     entity_count=entity_encoder.no_of_labels

@@ -2,9 +2,9 @@ from torch import Tensor
 import torch.nn as nn
 from transformers import AutoModel
 
-from banking_nlu.utils.schemas import TransformerModelOutput
+from banking_nlu.utils.schemas import Model01LogitOutput
 
-class BankingNLUTransformerModel(nn.Module):
+class Model01BankingNLUTransformerModel(nn.Module):
 
     def __init__(
         self, 
@@ -22,7 +22,7 @@ class BankingNLUTransformerModel(nn.Module):
         self.intent_head = nn.Linear(hidden_size, intent_count)
         self.entity_head = nn.Linear(hidden_size, entity_count)
 
-    def forward(self, input_ids:Tensor, attention_mask:Tensor) -> TransformerModelOutput:
+    def forward(self, input_ids:Tensor, attention_mask:Tensor) -> Model01LogitOutput:
         outputs = self.encoder(input_ids=input_ids, attention_mask=attention_mask)
 
         hidden_state = outputs.last_hidden_state
@@ -34,7 +34,7 @@ class BankingNLUTransformerModel(nn.Module):
         intent_logits = self.intent_head(cls_embedding)
         entity_logits = self.entity_head(token_embedding)
 
-        return TransformerModelOutput(
+        return Model01LogitOutput(
             intent_logits=intent_logits,
             entity_logits=entity_logits,
         )
