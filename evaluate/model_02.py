@@ -32,6 +32,10 @@ def evaluate():
     print(intent_result)
     print("====== entity evaluation =======")
     print(entity_result)
+
+    print(f"Accuracy : {evaluation.accuracy}")
+    print(f"F1       : {evaluation.f1}")
+
     with open(env.EVALUATION_FILE, "w", encoding="utf-8") as f:
         f.write(evaluation.model_dump_json(indent=2))
 
