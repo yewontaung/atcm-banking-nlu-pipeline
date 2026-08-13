@@ -28,13 +28,13 @@ def evaluate():
     intent_result = evaluation.intent_evaluation.model_dump_json(indent=2)
     entity_result = evaluation.entity_evaluation.model_dump_json(indent=2)
 
-    print("====== intent evaluation =======")
-    print(intent_result)
-    print("====== entity evaluation =======")
-    print(entity_result)
+    print("====== Intent evaluation ======")
+    print(f"Accuracy : {evaluation.intent_evaluation.accuracy}")
+    print(f"F1       : {evaluation.intent_evaluation.f1}")
 
-    print(f"Accuracy : {evaluation.accuracy}")
-    print(f"F1       : {evaluation.f1}")
+    print("====== Entity evaluation ======")
+    print(f"Accuracy : {evaluation.entity_evaluation.accuracy}")
+    print(f"F1       : {evaluation.entity_evaluation.f1}")
 
     with open(env.EVALUATION_FILE, "w", encoding="utf-8") as f:
         f.write(evaluation.model_dump_json(indent=2))

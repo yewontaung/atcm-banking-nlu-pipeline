@@ -58,11 +58,17 @@ def evaluate():
 
     print(evaluation_data.model_dump_json())
 
-    result = evaluator.calculate_evaluation_result()
-    print(f"Accuracy : {result.accuracy}")
-    print(f"F1       : {result.f1}")
+    evaluation = evaluator.calculate_matrices(evaluation_data)
+    print("====== Intent evaluation ======")
+    print(f"Accuracy : {evaluation.intent_evaluation.accuracy}")
+    print(f"F1       : {evaluation.intent_evaluation.f1}")
+
+    print("====== Entity evaluation ======")
+    print(f"Accuracy : {evaluation.entity_evaluation.accuracy}")
+    print(f"F1       : {evaluation.entity_evaluation.f1}")
+
     with open(env.EVALUATION_FILE, "w", encoding="utf-8") as f:
-            f.write(result.model_dump_json(indent=2))
+            f.write(evaluation.model_dump_json(indent=2))
 
 if __name__ == "__main__":
     evaluate()
