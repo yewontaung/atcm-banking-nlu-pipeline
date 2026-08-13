@@ -1,5 +1,6 @@
 import torch
 
+import sklearn.metrics as sk
 from seqeval.metrics import accuracy_score, classification_report, precision_score, recall_score, f1_score
 from banking_nlu.evaluations.matrices import make_json_serializable
 from banking_nlu.utils.schemas import EvaluationData, EvaluationResult, Model01LogitOutput, Model02EvaluationResult, TransformerTokenizedDataset, TruthResult
@@ -49,21 +50,37 @@ class Model01Evaluator:
             entity_truth=TruthResult(grounded_truth=true_entities, predicted_truth=pred_entities)
         )
 
-    def calculate_matrices(self, evaluation_data:EvaluationData) -> Model02EvaluationResult:
+    def calculate_matrices(self, evaluation_data):
 
-        true_intent = self.intent_encoder.decode(evaluation_data.intent_truth.grounded_truth)
-        pred_intent = self.intent_encoder.decode(evaluation_data.intent_truth.predicted_truth)
-        intent_evaluation = self.calculate_evaluation_result(true_intent, pred_intent)
+        intent_truth = evaluation_data.intent_truth
+
+        intent_evaluation = self.calculate_intent_evaluation(
+            intent_truth.grounded_truth,
+            intent_truth.predicted_truth
+        )
 
         entity_truth = evaluation_data.entity_truth
-        entity_evaluation = self.calculate_evaluation_result(entity_truth.grounded_truth, entity_truth.predicted_truth)
+
+        entity_evaluation = self.calculate_entity_evaluation(
+            entity_truth.grounded_truth,
+            entity_truth.predicted_truth
+        )
 
         return Model02EvaluationResult(
             intent_evaluation=intent_evaluation,
             entity_evaluation=entity_evaluation
         )
 
-    def calculate_evaluation_result(self, grounded_truth, pred_truth) -> EvaluationResult:
+    def calculate_intent_evaluation(self, grounded_truth, pred_truth) -> EvaluationResult:
+        return EvaluationResult(
+            report=make_json_serializable(sk.classification_report(grounded_truth, pred_truth, output_dict=True)),
+            accuracy=sk.accuracy_score(grounded_truth, pred_truth),
+            precision=sk.precision_score(grounded_truth, pred_truth),
+            recall=sk.recall_score(grounded_truth, pred_truth),
+            f1=sk.f1_score(grounded_truth, pred_truth)
+        )
+
+    def calculate_entity_evaluation_result(self, grounded_truth, pred_truth) -> EvaluationResult:
         return EvaluationResult(
             report=make_json_serializable(classification_report(grounded_truth, pred_truth, output_dict=True)),
             accuracy=accuracy_score(grounded_truth, pred_truth),
