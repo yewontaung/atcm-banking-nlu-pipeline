@@ -72,7 +72,7 @@ class Model01Evaluator:
             entity_evaluation=entity_evaluation
         )
 
-    def calculate_entity_evaluation_result(self, grounded_truth, pred_truth) -> EvaluationResult:
+    def calculate_entity_evaluation(self, grounded_truth, pred_truth) -> EvaluationResult:
         return EvaluationResult(
             report=make_json_serializable(classification_report(grounded_truth, pred_truth, output_dict=True)),
             accuracy=accuracy_score(grounded_truth, pred_truth),
