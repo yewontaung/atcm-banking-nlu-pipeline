@@ -55,7 +55,9 @@ def evaluate():
 
     evaluation_data = evaluator.get_evaluation_data(tokenized)
 
-    print(evaluation_data.model_dump_json(indent=2))
+    print(evaluation_data.model_dump_json())
+
+    metrices = evaluator.calculate_matrices(evaluation_data)
 
 if __name__ == "__main__":
     evaluate()
