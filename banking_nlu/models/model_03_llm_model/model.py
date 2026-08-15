@@ -34,6 +34,10 @@ class Model03LLMBasedClassificationModel:
         self.model.to(self.device)
         self.model.eval()
 
+    def to(self, device: str):
+        self.device = device
+        self.model.to(device)
+        return self
 
     def predict(self, text:str) -> dict:
         prompt = f"""Extract the intent and entities from this banking request.
