@@ -114,7 +114,7 @@ import json
 from banking_nlu.dataprocessors.tokenizers import TextTokenizer
 
 
-class Model03TokenizationProcessor:
+class Model03TokenizationProcessor(BaseTokenizationProcessor):
 
     def __init__(
         self,
@@ -124,22 +124,22 @@ class Model03TokenizationProcessor:
         self.tokenizer = tokenizer
         self.max_length = max_length
 
-    def process(self, item):
+    def process(self, sample):
 
         target = {
-            "text": item.text,
+            "text": sample.text,
             "intents": [
                 {
                     "label": intent.label,
                     "entities": [
                         {
                             "label": entity.label,
-                            "value": entity.value,
+                            "value": sample.text[entity.start_index:entity.end_index],
                         }
                         for entity in intent.entities
                     ],
                 }
-                for intent in item.intents
+                for intent in sample.intents
             ],
         }
 
@@ -151,7 +151,7 @@ class Model03TokenizationProcessor:
         prompt = f"""Extract the intents and entities from this banking request.
 
 Input:
-{item.text}
+{sample.text}
 
 Return JSON only.
 
@@ -191,5 +191,5 @@ Answer:
             "input_ids": input_ids,
             "attention_mask": attention_mask,
             "labels": labels,
-            "text": item.text,
+            "text": sample.text,
         }
