@@ -25,10 +25,10 @@ class Model03LLMBasedClassificationModel:
             ),
         )
 
-        if adaptor_path:
+        if adapter_path:
             self.model = PeftModel.from_pretrained(
                 self.model,
-                adaptor_path
+                adapter_path
             )
 
         self.model.to(self.device)
