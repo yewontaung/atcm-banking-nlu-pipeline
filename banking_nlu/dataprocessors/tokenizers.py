@@ -107,3 +107,89 @@ class Model02TokenizationProcessor(BaseTokenizationProcessor[SpanIntentTokenized
             entities.extend(intent.entities)
 
         return self.entity_labeler.create(entities, offsets)
+
+
+import json
+
+from banking_nlu.dataprocessors.tokenizers import TextTokenizer
+
+
+class Model03TokenizationProcessor:
+
+    def __init__(
+        self,
+        tokenizer: TextTokenizer,
+        max_length: int = 512,
+    ):
+        self.tokenizer = tokenizer
+        self.max_length = max_length
+
+    def process(self, item):
+
+        target = {
+            "text": item.text,
+            "intents": [
+                {
+                    "label": intent.label,
+                    "entities": [
+                        {
+                            "label": entity.label,
+                            "value": entity.value,
+                        }
+                        for entity in intent.entities
+                    ],
+                }
+                for intent in item.intents
+            ],
+        }
+
+        target_json = json.dumps(
+            target,
+            ensure_ascii=False,
+        )
+
+        prompt = f"""Extract the intents and entities from this banking request.
+
+Input:
+{item.text}
+
+Return JSON only.
+
+Answer:
+"""
+
+        prompt_tokens = self.tokenizer.tokenizer(
+            prompt,
+            add_special_tokens=True,
+            truncation=True,
+            max_length=self.max_length,
+        )
+
+        target_tokens = self.tokenizer.tokenizer(
+            target_json,
+            add_special_tokens=False,
+            truncation=True,
+            max_length=self.max_length,
+        )
+
+        input_ids = (
+            prompt_tokens["input_ids"]
+            + target_tokens["input_ids"]
+        )
+
+        attention_mask = (
+            prompt_tokens["attention_mask"]
+            + target_tokens["attention_mask"]
+        )
+
+        labels = (
+            [-100] * len(prompt_tokens["input_ids"])
+            + target_tokens["input_ids"]
+        )
+
+        return {
+            "input_ids": input_ids,
+            "attention_mask": attention_mask,
+            "labels": labels,
+            "text": item.text,
+        }
