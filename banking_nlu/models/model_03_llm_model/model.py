@@ -13,7 +13,7 @@ class Model03LLMBasedClassificationModel:
         self,
         model_name:str,
         tokenizer,
-        adaptor_path:str,
+        adapter_path:str | None,
         device:str = "cpu"):
 
         self.tokenizer = tokenizer
