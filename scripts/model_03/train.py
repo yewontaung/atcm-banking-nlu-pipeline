@@ -24,15 +24,15 @@ from banking_nlu.utils import env
 # Configuration
 # ============================================================
 
-MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
+MODEL_NAME = "google/gemma-3-270m-it"
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-BATCH_SIZE = 2
+BATCH_SIZE = 8
 EPOCHS = int(env.EPOCHS)
 LEARNING_RATE = 2e-4
 
-MAX_LENGTH = 512
+MAX_LENGTH = 256
 
 SAVE_PATH = f"{env.SAVED_MODEL_PATH}"
 
