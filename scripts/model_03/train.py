@@ -1,32 +1,231 @@
+# scripts/model_03/train.py
+
+import json
 import torch
 
+from torch.utils.data import Dataset, DataLoader
 from torch.optim import AdamW
-from torch.utils.data import DataLoader
-from transformers import AutoTokenizer
 
-from banking_nlu.dataloader.collator import NLUCollator
-from banking_nlu.dataloader.dataset import Model03Dataset
+from transformers import (
+    AutoTokenizer,
+    AutoModelForCausalLM,
+)
+
+from peft import (
+    LoraConfig,
+    get_peft_model,
+)
+
 from banking_nlu.dataprocessors.preprocessors import DataPreProcessor
-from banking_nlu.dataprocessors.tokenizers import (
-    Model03TokenizationProcessor,
-    TextTokenizer,
-)
-from banking_nlu.models.model_03_llm_model.model import (
-    Model03LLMBasedClassificationModel,
-)
-from scripts.trainer import Model03Trainer
 from banking_nlu.utils import env
-from banking_nlu.utils.checkpoint import save_model
 
 
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+# ============================================================
+# Configuration
+# ============================================================
 
 MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
 
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+BATCH_SIZE = 2
+EPOCHS = int(env.EPOCHS)
+LEARNING_RATE = 2e-4
+
+MAX_LENGTH = 512
+
+SAVE_PATH = f"{env.SAVED_MODEL_PATH}"
+
 
 # ============================================================
-# Data Processing
+# Dataset
 # ============================================================
+
+class Model03Dataset(Dataset):
+
+    def __init__(self, samples):
+        self.samples = samples
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, index):
+        return self.samples[index]
+
+
+# ============================================================
+# Tokenization
+# ============================================================
+
+def create_training_sample(
+    sample,
+    tokenizer,
+):
+    """
+    Convert the clean DataPreProcessor object into:
+
+        input_ids
+        attention_mask
+        labels
+
+    The model receives:
+
+        prompt + expected JSON
+
+    but loss is calculated ONLY on the expected JSON.
+    """
+
+    target = {
+        "text": sample.text,
+        "intents": [
+            {
+                "label": intent.label,
+                "entities": [
+                    {
+                        "label": entity.label,
+                        "value": sample.text[
+                            entity.start:entity.end
+                        ],
+                    }
+                    for entity in intent.entities
+                ],
+            }
+            for intent in sample.intents
+        ],
+    }
+
+    target_json = json.dumps(
+        target,
+        ensure_ascii=False,
+    )
+
+    prompt = f"""Extract the intents and entities from this banking request.
+
+Input:
+{sample.text}
+
+Return JSON only.
+
+Answer:
+"""
+
+    # ----------------------------------------
+    # Tokenize prompt
+    # ----------------------------------------
+
+    prompt_tokens = tokenizer(
+        prompt,
+        add_special_tokens=True,
+        truncation=True,
+        max_length=MAX_LENGTH,
+    )
+
+    # ----------------------------------------
+    # Tokenize expected answer
+    # ----------------------------------------
+
+    target_tokens = tokenizer(
+        target_json,
+        add_special_tokens=False,
+        truncation=True,
+        max_length=MAX_LENGTH,
+    )
+
+    prompt_ids = prompt_tokens["input_ids"]
+    target_ids = target_tokens["input_ids"]
+
+    input_ids = prompt_ids + target_ids
+
+    attention_mask = (
+        [1] * len(input_ids)
+    )
+
+    # Don't calculate loss for prompt tokens.
+    labels = (
+        [-100] * len(prompt_ids)
+        + target_ids
+    )
+
+    # ----------------------------------------
+    # Limit total sequence length
+    # ----------------------------------------
+
+    input_ids = input_ids[:MAX_LENGTH]
+    attention_mask = attention_mask[:MAX_LENGTH]
+    labels = labels[:MAX_LENGTH]
+
+    return {
+        "input_ids": input_ids,
+        "attention_mask": attention_mask,
+        "labels": labels,
+    }
+
+
+# ============================================================
+# Collator
+# ============================================================
+
+class Model03Collator:
+
+    def __init__(self, tokenizer):
+        self.tokenizer = tokenizer
+
+    def __call__(self, batch):
+
+        max_length = max(
+            len(item["input_ids"])
+            for item in batch
+        )
+
+        input_ids = []
+        attention_masks = []
+        labels = []
+
+        for item in batch:
+
+            padding = (
+                max_length
+                - len(item["input_ids"])
+            )
+
+            input_ids.append(
+                item["input_ids"]
+                + [self.tokenizer.pad_token_id] * padding
+            )
+
+            attention_masks.append(
+                item["attention_mask"]
+                + [0] * padding
+            )
+
+            labels.append(
+                item["labels"]
+                + [-100] * padding
+            )
+
+        return {
+            "input_ids": torch.tensor(
+                input_ids,
+                dtype=torch.long,
+            ),
+
+            "attention_mask": torch.tensor(
+                attention_masks,
+                dtype=torch.long,
+            ),
+
+            "labels": torch.tensor(
+                labels,
+                dtype=torch.long,
+            ),
+        }
+
+
+# ============================================================
+# Load Data
+# ============================================================
+
+print("Loading dataset...")
 
 processor = DataPreProcessor()
 
@@ -38,30 +237,51 @@ validation_processed = processor.process_file(
     env.VALIDATE_JSON
 )
 
+print(
+    f"Training samples: {len(train_processed)}"
+)
+
+print(
+    f"Validation samples: {len(validation_processed)}"
+)
+
 
 # ============================================================
 # Tokenizer
 # ============================================================
 
-tokenizer = TextTokenizer(
-    AutoTokenizer.from_pretrained(
-        MODEL_NAME
+print("Loading tokenizer...")
+
+tokenizer = AutoTokenizer.from_pretrained(
+    MODEL_NAME,
+)
+
+if tokenizer.pad_token is None:
+    tokenizer.pad_token = tokenizer.eos_token
+
+
+# ============================================================
+# Prepare Training Data
+# ============================================================
+
+print("Tokenizing training data...")
+
+train_data = [
+    create_training_sample(
+        sample,
+        tokenizer,
     )
-)
-
-tokenization_processor = Model03TokenizationProcessor(
-    tokenizer=tokenizer
-)
-
-
-train_tokenized = [
-    tokenization_processor.process(item)
-    for item in train_processed
+    for sample in train_processed
 ]
 
-validation_tokenized = [
-    tokenization_processor.process(item)
-    for item in validation_processed
+print("Tokenizing validation data...")
+
+validation_data = [
+    create_training_sample(
+        sample,
+        tokenizer,
+    )
+    for sample in validation_processed
 ]
 
 
@@ -69,19 +289,12 @@ validation_tokenized = [
 # Dataset
 # ============================================================
 
-train_dataset = Model03Dataset(train_tokenized)
-
-validation_dataset = Model03Dataset(
-    validation_tokenized
+train_dataset = Model03Dataset(
+    train_data
 )
 
-
-# ============================================================
-# Collator
-# ============================================================
-
-collator = NLUCollator(
-    pad_token_id=tokenizer.tokenizer.pad_token_id,
+validation_dataset = Model03Dataset(
+    validation_data
 )
 
 
@@ -89,31 +302,71 @@ collator = NLUCollator(
 # DataLoader
 # ============================================================
 
+collator = Model03Collator(
+    tokenizer
+)
+
 train_loader = DataLoader(
-    dataset=train_dataset,
-    batch_size=2,
+    train_dataset,
+    batch_size=BATCH_SIZE,
     shuffle=True,
     collate_fn=collator,
 )
 
-val_loader = DataLoader(
-    dataset=validation_dataset,
-    batch_size=2,
+validation_loader = DataLoader(
+    validation_dataset,
+    batch_size=BATCH_SIZE,
     shuffle=False,
     collate_fn=collator,
 )
 
 
 # ============================================================
-# Model
+# Load LLM
 # ============================================================
 
-model = Model03LLMBasedClassificationModel(
-    model_name=MODEL_NAME,
-    tokenizer=tokenizer.tokenizer,
-    adapter_path=None,
-    device=DEVICE,
+print("Loading model...")
+
+model = AutoModelForCausalLM.from_pretrained(
+    MODEL_NAME,
+
+    dtype=(
+        torch.float16
+        if DEVICE == "cuda"
+        else torch.float32
+    ),
 )
+
+
+# ============================================================
+# LoRA
+# ============================================================
+
+print("Creating LoRA adapter...")
+
+lora_config = LoraConfig(
+    r=8,
+    lora_alpha=16,
+    lora_dropout=0.05,
+
+    bias="none",
+
+    task_type="CAUSAL_LM",
+
+    target_modules=[
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+    ],
+)
+
+model = get_peft_model(
+    model,
+    lora_config,
+)
+
+model.print_trainable_parameters()
 
 model.to(DEVICE)
 
@@ -124,19 +377,90 @@ model.to(DEVICE)
 
 optimizer = AdamW(
     model.parameters(),
-    lr=2e-4,
+    lr=LEARNING_RATE,
 )
 
 
 # ============================================================
-# Trainer
+# Training Functions
 # ============================================================
 
-trainer = Model03Trainer(
-    model=model,
-    device=DEVICE,
-    optimizer=optimizer,
-)
+def train_epoch():
+
+    model.train()
+
+    total_loss = 0.0
+
+    for batch in train_loader:
+
+        input_ids = batch["input_ids"].to(
+            DEVICE
+        )
+
+        attention_mask = batch[
+            "attention_mask"
+        ].to(DEVICE)
+
+        labels = batch["labels"].to(
+            DEVICE
+        )
+
+        optimizer.zero_grad()
+
+        outputs = model(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            labels=labels,
+        )
+
+        loss = outputs.loss
+
+        loss.backward()
+
+        optimizer.step()
+
+        total_loss += loss.item()
+
+    return (
+        total_loss
+        / len(train_loader)
+    )
+
+
+def validate():
+
+    model.eval()
+
+    total_loss = 0.0
+
+    with torch.no_grad():
+
+        for batch in validation_loader:
+
+            input_ids = batch[
+                "input_ids"
+            ].to(DEVICE)
+
+            attention_mask = batch[
+                "attention_mask"
+            ].to(DEVICE)
+
+            labels = batch[
+                "labels"
+            ].to(DEVICE)
+
+            outputs = model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                labels=labels,
+            )
+
+            total_loss += outputs.loss.item()
+
+    return (
+        total_loss
+        / len(validation_loader)
+    )
 
 
 # ============================================================
@@ -157,15 +481,11 @@ print(
 print("-" * 47)
 
 
-for epoch in range(int(env.EPOCHS)):
+for epoch in range(EPOCHS):
 
-    train_loss = trainer.train_epoch(
-        train_loader
-    )
+    train_loss = train_epoch()
 
-    val_loss = trainer.validate_epoch(
-        val_loader
-    )
+    val_loss = validate()
 
     print(
         f"| {epoch + 1:^7} | "
@@ -178,19 +498,28 @@ for epoch in range(int(env.EPOCHS)):
         best_val_loss = val_loss
         best_epoch = epoch + 1
 
-        save_model(
-            path=f"{env.SAVED_MODEL_PATH}",
-            model=model,
-        )
-
         print(
-            f"  ✓ New best model saved "
+            f"  ✓ New best model "
             f"(epoch={best_epoch}, "
             f"val_loss={best_val_loss:.4f})"
+        )
+
+        model.save_pretrained(
+            SAVE_PATH
         )
 
 
 print()
 print("****** Training Done ******")
-print(f"Best Epoch: {best_epoch}")
-print(f"Best Validation Loss: {best_val_loss:.4f}")
+print(
+    f"Best Epoch: {best_epoch}"
+)
+
+print(
+    f"Best Validation Loss: "
+    f"{best_val_loss:.4f}"
+)
+
+print(
+    f"Adapter saved to: {SAVE_PATH}"
+)
