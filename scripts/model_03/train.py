@@ -14,7 +14,7 @@ from banking_nlu.dataprocessors.tokenizers import (
 from banking_nlu.models.model_03_llm_model.model import (
     Model03LLMBasedClassificationModel,
 )
-from scripts.trainer import NLUModelTrainer
+from scripts.trainer import Model03Trainer
 from banking_nlu.utils import env
 from banking_nlu.utils.checkpoint import save_model
 
@@ -132,7 +132,7 @@ optimizer = AdamW(
 # Trainer
 # ============================================================
 
-trainer = NLUModelTrainer(
+trainer = Model03Trainer(
     model=model,
     device=DEVICE,
     optimizer=optimizer,

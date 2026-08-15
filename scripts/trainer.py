@@ -97,3 +97,72 @@ class NLUModelTrainer:
                     f"val_loss={loss.item():.4f}"
                 )
             return total_loss / len(dataloader)
+
+
+class Model03Trainer:
+
+    def __init__(
+        self,
+        model,
+        device: str,
+        optimizer,
+    ):
+        self.model = model
+        self.device = device
+        self.optimizer = optimizer
+
+    def train_epoch(self, data_loader):
+
+        self.model.train()
+
+        total_loss = 0.0
+
+        for batch in data_loader:
+
+            input_ids = batch["input_ids"].to(self.device)
+            attention_mask = batch["attention_mask"].to(self.device)
+            labels = batch["labels"].to(self.device)
+
+            self.optimizer.zero_grad()
+
+            outputs = self.model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                labels=labels,
+            )
+
+            loss = outputs.loss
+
+            loss.backward()
+
+            self.optimizer.step()
+
+            total_loss += loss.item()
+
+        return total_loss / len(data_loader)
+
+    def validate_epoch(self, data_loader):
+
+        self.model.eval()
+
+        total_loss = 0.0
+
+        with torch.no_grad():
+
+            for batch in data_loader:
+
+                input_ids = batch["input_ids"].to(self.device)
+                attention_mask = batch["attention_mask"].to(self.device)
+                labels = batch["labels"].to(self.device)
+
+                outputs = self.model(
+                    input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    labels=labels,
+                )
+
+                loss = outputs.loss
+
+                total_loss += loss.item()
+
+        return total_loss / len(data_loader)
