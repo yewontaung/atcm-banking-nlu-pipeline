@@ -84,7 +84,7 @@ def create_training_sample(
                     {
                         "label": entity.label,
                         "value": sample.text[
-                            entity.start:entity.end
+                            entity.start_index:entity.end_index
                         ],
                     }
                     for entity in intent.entities
