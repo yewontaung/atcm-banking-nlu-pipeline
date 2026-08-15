@@ -5,7 +5,7 @@ from transformers import AutoTokenizer, SentencePieceBackend
 
 from banking_nlu.dataprocessors.encoders.bio import BIOLabelEncoder
 from banking_nlu.dataprocessors.encoders.classification import IntentClassificationEncoder
-from banking_nlu.utils.schemas import EntitySpan, ProcessedDataset, Span, TokenizedDataset, TransformerTokenizedDataset, SpanIntentTokenizedDataset
+from banking_nlu.utils.schemas import EntitySpan, Model03TokenizedData, ProcessedDataset, Span, TokenizedDataset, TransformerTokenizedDataset, SpanIntentTokenizedDataset
 
 R = TypeVar("R", bound=TokenizedDataset)
 
@@ -187,9 +187,10 @@ Answer:
             + target_tokens["input_ids"]
         )
 
-        return {
-            "input_ids": input_ids,
-            "attention_mask": attention_mask,
-            "labels": labels,
-            "text": sample.text,
-        }
+        return Model03TokenizedData(
+            text=sample.text,
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            labels=labels,
+            
+        )

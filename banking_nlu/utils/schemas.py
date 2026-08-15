@@ -184,3 +184,11 @@ class EvaluationResult(BaseModel):
 class Model02EvaluationResult(BaseModel):
     intent_evaluation:EvaluationResult
     entity_evaluation:EvaluationResult
+
+
+@dataclass
+class Model03TokenizedData:
+    text:str
+    input_ids: list[int]
+    attention_mask: list[int]
+    labels: list[int]
