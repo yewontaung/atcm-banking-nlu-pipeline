@@ -18,3 +18,20 @@ class NLUDataset(Dataset):
             "intent_labels": result.intent_labels,
             "ner_labels": result.ner_labels
         }
+
+class Model03Dataset(Dataset):
+
+    def __init__(self, data):
+        self.data = data
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        result = self.data[index]
+
+        return {
+            "input_ids": result.input_ids,
+            "attention_mask": result.attention_mask,
+            "labels": result.labels,
+        }

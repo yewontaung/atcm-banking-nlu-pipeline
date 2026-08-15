@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 
 from banking_nlu.dataloader.collator import NLUCollator
-from banking_nlu.dataloader.dataset import NLUDataset
+from banking_nlu.dataloader.dataset import Model03Dataset
 from banking_nlu.dataprocessors.preprocessors import DataPreProcessor
 from banking_nlu.dataprocessors.tokenizers import (
     Model03TokenizationProcessor,
@@ -69,9 +69,9 @@ validation_tokenized = [
 # Dataset
 # ============================================================
 
-train_dataset = NLUDataset(train_tokenized)
+train_dataset = Model03Dataset(train_tokenized)
 
-validation_dataset = NLUDataset(
+validation_dataset = Model03Dataset(
     validation_tokenized
 )
 
