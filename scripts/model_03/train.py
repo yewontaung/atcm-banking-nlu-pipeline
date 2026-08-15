@@ -24,7 +24,7 @@ from banking_nlu.utils import env
 # Configuration
 # ============================================================
 
-MODEL_NAME = "google/gemma-3-270m-it"
+MODEL_NAME = "Qwen/Qwen2.5-0.5B-Instruct"
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
